@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:junofast_vendor/Bottom%20Navigation/bottom_navigation_controller.dart';
 import 'package:junofast_vendor/Dashboard/dashboard_view.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+
 
 
 class BottomNavigationView extends GetView<BottomNavigationController> {
