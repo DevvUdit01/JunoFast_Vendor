@@ -1,9 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:junofast_vendor/Dashboard/dashboard_controller.dart';
+import 'package:intl/intl.dart'; // For date formatting
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
+
+  // Format Timestamp to a readable date string
+  String formatTimestamp(Timestamp timestamp) {
+    final date = timestamp.toDate();
+    return DateFormat('yyyy-MM-dd – kk:mm').format(date);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +50,12 @@ class DashboardView extends GetView<DashboardController> {
                       SizedBox(height: 5),
                       Text('Status: ${lead.status}'),
                       SizedBox(height: 5),
-                      Text(
-                          'Accepted By: ${lead.acceptedBy ?? "Not accepted yet"}'),
+                      Text('Pickup Location: ${lead.pickupLocation.latitude}, ${lead.pickupLocation.longitude}'),
+                      Text('Drop Location: ${lead.dropLocation.latitude}, ${lead.dropLocation.longitude}'),
+                      Text('Vehicle Type: ${lead.vehicleType}'),
+                      Text('Timestamp: ${formatTimestamp(lead.timestamp)}'),
+                      SizedBox(height: 5),
+                      Text('Accepted By: ${lead.acceptedBy ?? "Not accepted yet"}'),
                     ],
                   ),
                   trailing: lead.status == 'pending'

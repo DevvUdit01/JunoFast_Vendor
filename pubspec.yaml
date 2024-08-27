@@ -50,6 +50,8 @@ dependencies:
   background_locator_2: ^2.0.6
   flutter_local_notifications: ^17.2.2
   permission_handler: ^11.3.1
+  firebase_analytics: ^11.3.0
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
