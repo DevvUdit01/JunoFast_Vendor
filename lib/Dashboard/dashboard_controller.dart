@@ -24,8 +24,12 @@ class DashboardController extends GetxController {
     _requestNotificationPermission();
 
     // Fetch and store the FCM token
-    _firebaseMessaging.getToken().then((token) {
-      _firestore.collection('vendors').doc(vendorId).update({'fcmToken': token});
+    _firebaseMessaging.getToken().then((token) async {
+      DocumentSnapshot vendorDoc = await _firestore.collection('vendors').doc(vendorId).get();
+      var existingToken = vendorDoc['fcmToken'];
+      if (existingToken != token) {
+        await _firestore.collection('vendors').doc(vendorId).update({'fcmToken': token});
+      }
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -79,18 +83,25 @@ class DashboardController extends GetxController {
   }
 
   void _handleNotificationClick(RemoteMessage message) {
-    final String? leadId = message.data['leadId'];
-    if (leadId != null) {
-      // Handle navigation to lead details
+    print('onMessage received: ${message.data}');
+  
+    // Extract the leadId from the notification data
+    String? leadId = message.data['leadId'];
+  
+    if (leadId != null && leadId.isNotEmpty) {
       print('Navigating to Lead ID: $leadId');
-      // Use Get.to() or Get.off() to navigate to the Lead Details page
-      // Get.to(() => LeadDetailView(leadId: leadId));
+      
+      // Perform navigation to the lead details page
+      Get.toNamed('/lead-details', arguments: leadId);
+    } else {
+      print('Error: leadId is null or empty');
+      Get.snackbar('Error', 'Invalid lead ID', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
     }
   }
 
   void fetchAndListenForLeads() {
     print('Fetching and listening for leads for vendor ID: $vendorId');
-    _firestore.collection('leads').where('vendorIds', arrayContains: vendorId).snapshots().listen((querySnapshot) {
+    _firestore.collection('leads').where('notifiedVendors', arrayContains: vendorId).snapshots().listen((querySnapshot) {
       print('Number of leads fetched: ${querySnapshot.docs.length}');
       leads.value = querySnapshot.docs.map((doc) => Lead.fromDocument(doc)).toList();
     }, onError: (error) {
@@ -98,37 +109,46 @@ class DashboardController extends GetxController {
     });
   }
 
-  Future<void> acceptLead(String leadId) async {
-    print('Attempting to accept lead with ID: $leadId');
-    try {
-      DocumentSnapshot leadDoc = await _firestore.collection('leads').doc(leadId).get();
-      if (!leadDoc.exists) {
-        Get.snackbar('Error', 'Lead not found', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-        return;
-      }
-
-      await _firestore.collection('leads').doc(leadId).update({
-        'acceptedBy': vendorId,
-        'status': 'accepted',
-      });
-
-      Get.snackbar('Success', 'Lead accepted successfully!', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
-
-      DocumentSnapshot leadDocAfterUpdate = await _firestore.collection('leads').doc(leadId).get();
-      Map<String, dynamic>? leadData = leadDocAfterUpdate.data() as Map<String, dynamic>?;
-
-      if (leadData != null) {
-        await _firestore.collection('bookings').doc(leadId).set(leadData);
-        await _firestore.collection('leads').doc(leadId).delete();
-        print('Lead moved to bookings and deleted from leads.');
-      } else {
-        Get.snackbar('Error', 'Failed to fetch lead data', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to accept lead: $e', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-      print('Error: $e');
+Future<void> acceptLead(String leadId) async {
+  print('Attempting to accept lead with ID: $leadId');
+  try {
+    DocumentSnapshot leadDoc = await _firestore.collection('leads').doc(leadId).get();
+    if (!leadDoc.exists) {
+      Get.snackbar('Error', 'Lead not found', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+      return;
     }
+
+    // Update lead document to indicate it has been accepted by the vendor
+    await _firestore.collection('leads').doc(leadId).update({
+      'acceptedBy': vendorId,
+      'status': 'accepted',
+    });
+
+    // Fetch lead data after updating
+    DocumentSnapshot leadDocAfterUpdate = await _firestore.collection('leads').doc(leadId).get();
+    Map<String, dynamic>? leadData = leadDocAfterUpdate.data() as Map<String, dynamic>?;
+
+    if (leadData != null) {
+      // Add vendorId to the lead data
+      leadData['acceptedBy'] = vendorId;
+
+      // Move lead to bookings collection
+      await _firestore.collection('bookings').doc(leadId).set(leadData);
+
+      // Delete the lead from leads collection
+      await _firestore.collection('leads').doc(leadId).delete();
+      print('Lead moved to bookings and deleted from leads.');
+
+      Get.snackbar('Success', 'Lead accepted and moved to bookings!', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+    } else {
+      Get.snackbar('Error', 'Failed to fetch lead data', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    }
+  } catch (e) {
+    Get.snackbar('Error', 'Failed to accept lead: $e', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    print('Error: $e');
   }
+}
+
 
   Future<void> _checkAndUpdateVendorLocation() async {
     final status = await Permission.location.status;
@@ -136,7 +156,13 @@ class DashboardController extends GetxController {
       if (await Permission.location.request().isGranted) {
         // Permission granted
         await _updateVendorLocation();
-      } else {
+      } 
+    if (await Permission.location.isPermanentlyDenied) {
+    // Show a dialog or snackbar asking the user to enable location in settings
+      Get.snackbar('Location Permission', 'Please enable location permission in settings.', snackPosition: SnackPosition.BOTTOM);
+      }
+
+      else {
         // Handle the case when permission is denied
         print('Location permission is required to update vendor location.');
       }
