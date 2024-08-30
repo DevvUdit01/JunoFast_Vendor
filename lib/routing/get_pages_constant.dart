@@ -1,77 +1,79 @@
 import 'package:get/get.dart';
-import 'package:junofast_vendor/Bottom%20Navigation/Bottom_navigation_binding.dart';
-import 'package:junofast_vendor/Bottom%20Navigation/bottom_navigation_view.dart';
-import 'package:junofast_vendor/Dashboard/dashboard_binding.dart';
-import 'package:junofast_vendor/Dashboard/dashboard_view.dart';
-import 'package:junofast_vendor/routing/routes_constant.dart';
+import 'package:junofast_vendor/features/BookingPage/booking_binding.dart';
+import 'package:junofast_vendor/features/BookingPage/booking_view.dart';
+import '../features/DashBord/dash_board_binding.dart';
+import '../features/DashBord/dash_board_pageview.dart';
+import '../features/From_DetailsPage/form_binding.dart';
+import '../features/From_DetailsPage/form_view.dart';
+import '../features/HomePage/homepage_binding.dart';
+import '../features/HomePage/homepage_view.dart';
+import '../features/login/login_page_binding.dart';
+import '../features/login/login_page_view.dart';
+import '../features/phone_authpage/phone_auth_binding.dart';
+import '../features/phone_authpage/phone_auth_view.dart';
+import '../features/settingspage/setting_page_binding.dart';
+import '../features/settingspage/setting_page_view.dart';
+import '../features/signuppage/signup_binding.dart';
+import '../features/signuppage/signup_view.dart';
+import '../features/splashScreen/splashScreenView.dart';
+import '../features/splashScreen/splash_binding.dart';
+import 'routes_constant.dart';
 
+List<GetPage> getPage = [
+  GetPage( 
+    name: RoutesConstant.loginpage,
+     page: ()=> const LoginPageView(),
+     binding: LoginPageBinding(),
+     transition: Transition.rightToLeft,
+     ),
+     GetPage( 
+    name: RoutesConstant.signuppage,
+     page: ()=> const SignUpPageView(),
+     binding: SignUpPageBinding(),
+     transition: Transition.rightToLeft,
+     ),
+       GetPage( 
+    name: RoutesConstant.homepage,
+     page: ()=> const HomePageView(),
+     binding: HomePageBinding(),
+     transition: Transition.rightToLeft,
+     ),
+       GetPage( 
+    name: RoutesConstant.splashPage,
+     page: ()=> const SplashScreenView(),
+     binding: SplashScreenBinding(),
+     transition: Transition.rightToLeft,
+     ),
+        GetPage( 
+    name: RoutesConstant.phoneAuth,
+     page: ()=> const PhoneAuthenticationView(),
+     binding: PhoneAuthenticationBinding(),
+     transition: Transition.rightToLeft,
+     ),
+        GetPage( 
+    name: RoutesConstant.dashpage,
+     page: ()=> const DashBoardView(),
+     binding: DashBoardBinding(),
+     transition: Transition.rightToLeft,
+     ),
+        GetPage( 
+    name: RoutesConstant.setting,
+     page: ()=> const SettingPageView(),
+     binding: SettingPageBinding(),
+     transition: Transition.rightToLeft,
+     ),
+        GetPage( 
+    name: RoutesConstant.formPage,
+     page: ()=> const FormPageView(),
+     binding: FormPageBinding(),
+     transition: Transition.rightToLeft,
+     ),
 
-List <GetPage> getpage= [
-  // GetPage(
-  //   name: RoutesConstant.login, 
-  //   page:()=>const LoginPageView(),
-  //   binding: LoginPageBinding(),
-  //   ),
-  // GetPage(
-  //   name: RoutesConstant.signup, 
-  //   page:()=>const SignUpPageView(),
-  //   binding: SignUpPageBinding(),
-  //   ),
-  // GetPage(
-  //   name: RoutesConstant.home, 
-  //   page:()=>HomePageView(),
-  //   binding: HomePageBinding(),
-  //   ),
-  // GetPage(
-  //   name: RoutesConstant.bottomnavigation, 
-  //   page:()=>const BottomNavigationBarView(),
-  //   binding: BottomNavigationBarBinding(),
-  //   ),
-
-  // GetPage(
-  //   name: RoutesConstant.settings, 
-  //   page:()=>SettingsPageView(),
-  //   binding: SettingsPageBinding(),
-  //   ),
-
-  // GetPage(
-  //   name: RoutesConstant.profile, 
-  //   page:()=>const ProfilePageView(),
-  //   binding: ProfilePageBinding(),
-  //   ),
-  //   GetPage(
-  //   name: RoutesConstant.signup2, 
-  //   page:()=>const SignUp2PageView(),
-  //   binding: SignUp2PageBinding(),
-  //   ),
-  //   GetPage(
-  //   name: RoutesConstant.splashscreen, 
-  //   page:()=>const SplashScreenView(),
-  //   binding: SplashScreenBinding(),
-  //   ),
-  //   GetPage(
-  //   name: RoutesConstant.formadd, 
-  //   page:()=>const FormAddView(),
-  //   binding: FormAddBinding(),
-  //   ),
-  //   GetPage(
-  //   name: RoutesConstant.imageupload, 
-  //   page:()=>const ImageUploadView(),
-  //   binding: ImageUploadBinding(),
-  //   ),
-  //   GetPage(
-  //   name: RoutesConstant.otpAuthentication, 
-  //   page:()=>const OtpAuthenticationView(),
-  //   binding: OtpAuthenticationBinding(),
-  //   ),
-  GetPage(
-      name: RoutesConstant.bottomnavigation,
-      page: () => BottomNavigationView(),
-      binding: BottomNavigationBinding(),
-    ),
-  GetPage(
-      name: RoutesConstant.Dashboard,
-      page: () => DashboardView(),
-      binding: DashboardBinding(),
+    GetPage( 
+     name: RoutesConstant.bookingpage,
+     page: ()=> const BookingPageView(),
+     binding: BookingPageBinding(),
+     transition: Transition.rightToLeft,
     ),
 ];
+

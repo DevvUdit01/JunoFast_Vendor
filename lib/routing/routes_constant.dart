@@ -1,14 +1,11 @@
 class RoutesConstant{
-  static String login = "/login_page_view.dart";
-  static String signup = "/signup_page_view.dart";
-  static String signup2 = "/signup2_page_view.dart";
-  static String home = "/home_page_view.dart";
-  static String bottomnavigation = "/bottom_navigation_bar_view.dart";
-  static String settings = "/settings_page_view.dart";
-  static String profile = "/profile_page_view.dart";
-  static String splashscreen = "/splash_screen_view.dart";
-  static String formadd = "/form_add_view.dart";
-  static String imageupload = "/image_upload_view.dart";
-  static String otpAuthentication = "/otp_authentication_view.dart";
-  static String Dashboard = "/dashboard_view.dart";
+  static String loginpage  ='/login_page_view';
+  static String signuppage  ='/signupView';
+  static String homepage  ='/homepage_view';
+  static String splashPage  ='/splashScreenView';
+  static String phoneAuth  ='/phone_auth_view';
+  static String dashpage ='/dash_board_pageview';
+  static String setting='/setting_page_view';
+  static String formPage='/form_view';
+  static String bookingpage = '/booking_view';
 }
