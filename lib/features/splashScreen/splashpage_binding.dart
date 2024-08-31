@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import 'splash_controller.dart';
+import 'splashpage_controller.dart';
 class SplashScreenBinding extends Bindings{
   @override
   void dependencies() {

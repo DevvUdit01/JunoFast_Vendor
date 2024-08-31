@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'booking_controller.dart';
+import 'bookingpage_controller.dart';
 
 class BookingPageBinding extends Bindings{
   @override

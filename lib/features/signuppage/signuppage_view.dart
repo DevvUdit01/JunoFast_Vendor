@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/features/signuppage/signup_binding.dart';
+import 'package:junofast_vendor/features/signuppage/signuppage_binding.dart';
 import 'package:junofast_vendor/routing/routes_constant.dart';
 
 
@@ -63,8 +63,9 @@ class SignUpPageView extends GetView<SignUpPageBinding> {
                                       onTap: () {
                                        // controller.loginWithFacebook();
                                       },
-                                      child: const Center(
-                                          child: Icon(Icons.facebook,size: 40,)))),
+                                     child: const Center(
+                                child: Image(image: AssetImage('assets/google.png'),width: 30,),
+                              ))),
                              
                                
                               SizedBox(

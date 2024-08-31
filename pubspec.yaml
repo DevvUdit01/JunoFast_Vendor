@@ -81,6 +81,7 @@ flutter:
     - assets/background.jpg
     - assets/jf_logo.png
     - assets/jf_splashlogo.png
+    - assets/google.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

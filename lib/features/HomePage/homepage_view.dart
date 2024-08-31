@@ -76,40 +76,97 @@ class HomePageView extends GetView<HomePageController> {
                 ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
-                  leading: const Icon(Icons.local_shipping, color: Colors.teal),
-                  title: Text(
-                    'Lead ID: ${lead.id}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  
+                 // leading: const Icon(Icons.local_shipping, color: Colors.teal,size: 50,),
+                  title: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.local_shipping, color: Colors.teal,size: 50,),
+                      Text(
+                        '  : Bhind to gwalior',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 5),
-                      Text('Status: ${lead.status}'),
-                      const SizedBox(height: 5),
-                      Text('Pickup Location: ${lead.pickupLocation.latitude}, ${lead.pickupLocation.longitude}'),
-                      Text('Drop Location: ${lead.dropLocation.latitude}, ${lead.dropLocation.longitude}'),
-                      Text('Vehicle Type: ${lead.vehicleType}'),
-                      Text('Timestamp: ${formatTimestamp(lead.timestamp)}'),
-                      const SizedBox(height: 5),
-                      Text('Accepted By: ${lead.acceptedBy ?? "Not accepted yet"}'),
+                      // const SizedBox(height: 5),
+                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: [
+                           Row(
+                             children: [
+                               const Text('Status : ',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 18),),
+                               Text(lead.status,style: const TextStyle(fontSize: 18),),
+                             ],
+                           ),
+                            Row(
+                             children: [
+                               const Text('Vehicle Type : ',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 18),),
+                               Text(lead.vehicleType,style: const TextStyle(fontSize: 18),),
+                             ],
+                           ),   
+                         ],
+                       ),
+                      // const SizedBox(height: 5),
+                      // Text('Pickup Location: ${lead.pickupLocation.latitude}, ${lead.pickupLocation.longitude}'),
+                      // Text('Drop Location: ${lead.dropLocation.latitude}, ${lead.dropLocation.longitude}'),
+                      
+                      
+                       const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                           Row(
+                              children: [
+                                const Text('DateTime : ',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 18),),
+                                 Text(formatTimestamp(lead.timestamp),style: const TextStyle(fontSize: 18),),
+                              ],
+                            ),
+                          // Row(
+                          //   children: [
+                          //     const Text('Accepted By : ',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 18),),
+                          //     Text('${lead.acceptedBy ?? "Not accepted yet"}',style: const TextStyle(fontSize: 18),),
+                          //   ],
+                          // ),
+                               
+                          
+                            
+                        ],
+                      ),
+                      const SizedBox(height: 20,),
+                      lead.status == 'pending'
+                      ? Center(
+                        child: ElevatedButton(
+                            onPressed: () => controller.acceptLead(lead.id),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text('Accept Lead',style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w500),),
+                          ),
+                      )
+                      : const Center(child: Icon(Icons.check_circle, color: Color(0xFF3FFF45),size: 50,)),
                     ],
                   ),
-                  trailing: lead.status == 'pending'
-                      ? ElevatedButton(
-                          onPressed: () => controller.acceptLead(lead.id),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: const Text('Accept Lead'),
-                        )
-                      : const Icon(Icons.check_circle, color: Colors.green),
-                  onTap: () {
-                    // Handle lead click, e.g., show lead details
-                  },
+                  // trailing: lead.status == 'pending'
+                  //     ? ElevatedButton(
+                  //         onPressed: () => controller.acceptLead(lead.id),
+                  //         style: ElevatedButton.styleFrom(
+                  //           backgroundColor: Colors.teal,
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(8),
+                  //           ),
+                  //         ),
+                  //         child: const Text('Accept Lead',style: TextStyle(color: Colors.white),),
+                  //       )
+                  //     : const Icon(Icons.check_circle, color: Color(0xFF3FFF45),size: 30,),
+                  // onTap: () {
+                  //   // Handle lead click, e.g., show lead details
+                  // },
                 ),
               );
             },

@@ -121,10 +121,8 @@ class LoginPageView extends GetView<LoginPageController> {
                               //  controller.loginWithFacebook();
                             },
                             child: const Center(
-                                child: Icon(
-                              Icons.facebook,
-                              size: 40,
-                            )))),
+                              child: Image(image: AssetImage('assets/google.png'),width: 30,),
+                              ))),
                     SizedBox(
                         width: 75,
                         height: 45,

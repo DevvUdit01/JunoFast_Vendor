@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/features/BookingPage/booking_view.dart';
+import 'package:junofast_vendor/features/BookingPage/bookingpage_view.dart';
 import 'package:junofast_vendor/features/settingspage/setting_page_view.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 

@@ -1,6 +1,6 @@
 
 import 'package:get/get.dart';
-import 'package:junofast_vendor/features/From_DetailsPage/form_controlller.dart';
+import 'package:junofast_vendor/features/Form_DetailsPage/formpage_controlller.dart';
 
 class FormPageBinding extends Bindings{
   @override
