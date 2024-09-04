@@ -107,8 +107,8 @@ class Booking {
 
     return Booking(
       id: doc.id,
-      pickupLocation: data['pickupLocation'] as GeoPoint? ?? GeoPoint(0, 0),
-      dropLocation: data['dropLocation'] as GeoPoint? ?? GeoPoint(0, 0),
+      pickupLocation: data['pickupLocation'] as GeoPoint ,
+      dropLocation: data['dropLocation'] as GeoPoint ,
       vehicleType: data['vehicleType'] as String? ?? '',
       status: data['status'] as String? ?? 'pending',
       amount: data['amount'] != null ? (data['amount'] as num).toDouble() : 0.0,
