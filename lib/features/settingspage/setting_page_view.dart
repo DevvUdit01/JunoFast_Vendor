@@ -31,7 +31,7 @@ class SettingPageView extends GetView<SettingPageController> {
               cartButton("Notification", Icons.notifications_none, Icons.arrow_forward_ios, () {}),
               cartButton("Coupons", Icons.card_giftcard, Icons.arrow_forward_ios, () {}),
               cartButton("Logout", Icons.logout, Icons.arrow_forward_ios, () {
-               // controller.logOut();
+                controller.logOut();
               }),
               cartButton("Delete Account", Icons.delete, Icons.arrow_forward_ios, () {}),
               Padding(

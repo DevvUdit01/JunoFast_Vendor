@@ -10,7 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../core/model.dart';
 
 class HomePageController extends GetxController {
-   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -111,8 +111,74 @@ class HomePageController extends GetxController {
     });
   }
 
-Future<void> acceptLead(String leadId) async {
-  print('Attempting to accept lead with ID: $leadId');
+  Future<void> acceptLead(String leadId) async {
+  // Show a dialog for transportation details
+  TextEditingController driverNameController = TextEditingController();
+  TextEditingController driverNumberController = TextEditingController();
+  TextEditingController vehicleDetailsController = TextEditingController();
+  TextEditingController vehicleNumberController = TextEditingController();
+
+  Get.defaultDialog(
+    title: 'Transportation Details',
+    content: Column(
+      children: [
+        TextField(
+          controller: driverNameController,
+          decoration: InputDecoration(labelText: 'Driver Name'),
+        ),
+        TextField(
+          controller: driverNumberController,
+          decoration: InputDecoration(labelText: 'Driver Number'),
+        ),
+        TextField(
+          controller: vehicleDetailsController,
+          decoration: InputDecoration(labelText: 'Vehicle Details'),
+        ),
+        TextField(
+          controller: vehicleNumberController,
+          decoration: InputDecoration(labelText: 'Vehicle Number'),
+        ),
+      ],
+    ),
+    textConfirm: 'Submit',
+    textCancel: 'Cancel',
+    onConfirm: () async {
+      String driverName = driverNameController.text;
+      String driverNumber = driverNumberController.text;
+      String vehicleDetails = vehicleDetailsController.text;
+      String vehicleNumber = vehicleNumberController.text;
+
+      // Ask for confirmation before proceeding
+      Get.defaultDialog(
+        title: 'Confirm Details',
+        content: Text('Are you sure you want to submit these details?'),
+        textConfirm: 'Yes',
+        textCancel: 'No',
+        onConfirm: () async {
+          Get.back(); // Close the confirmation dialog
+          Get.back(); // Close the transportation details dialog
+
+          // Proceed with updating the lead
+          await _updateLeadWithTransportationDetails(
+            leadId,
+            driverName,
+            driverNumber,
+            vehicleDetails,
+            vehicleNumber,
+          );
+        },
+      );
+    },
+  );
+}
+
+Future<void> _updateLeadWithTransportationDetails(
+  String leadId,
+  String driverName,
+  String driverNumber,
+  String vehicleDetails,
+  String vehicleNumber,
+) async {
   try {
     DocumentSnapshot leadDoc = await _firestore.collection('leads').doc(leadId).get();
     if (!leadDoc.exists) {
@@ -120,13 +186,17 @@ Future<void> acceptLead(String leadId) async {
       return;
     }
 
-    // Update lead document to indicate it has been accepted by the vendor
+    // Update lead document with transportation details
     await _firestore.collection('leads').doc(leadId).update({
       'acceptedBy': vendorId,
-      'status': 'accepted',
+      'status': 'processing',
+      'driverName': driverName,
+      'driverNumber': driverNumber,
+      'vehicleDetails': vehicleDetails,
+      'vehicleNumber': vehicleNumber,
     });
 
-    // Fetch lead data after updating
+    // Move lead to bookings collection using the same lead ID
     DocumentSnapshot leadDocAfterUpdate = await _firestore.collection('leads').doc(leadId).get();
     Map<String, dynamic>? leadData = leadDocAfterUpdate.data() as Map<String, dynamic>?;
 
@@ -134,12 +204,12 @@ Future<void> acceptLead(String leadId) async {
       // Add vendorId to the lead data
       leadData['acceptedBy'] = vendorId;
 
-      // Move lead to bookings collection
+      // Move lead to bookings collection using the same lead ID
       await _firestore.collection('bookings').doc(leadId).set(leadData);
 
       // Delete the lead from leads collection
       await _firestore.collection('leads').doc(leadId).delete();
-      print('Lead moved to bookings and deleted from leads.');
+      print('Lead moved to bookings with booking ID $leadId and deleted from leads.');
 
       Get.snackbar('Success', 'Lead accepted and moved to bookings!', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
     } else {
@@ -151,20 +221,16 @@ Future<void> acceptLead(String leadId) async {
   }
 }
 
-
   Future<void> _checkAndUpdateVendorLocation() async {
     final status = await Permission.location.status;
     if (!status.isGranted) {
       if (await Permission.location.request().isGranted) {
         // Permission granted
         await _updateVendorLocation();
-      } 
-    if (await Permission.location.isPermanentlyDenied) {
-    // Show a dialog or snackbar asking the user to enable location in settings
-      Get.snackbar('Location Permission', 'Please enable location permission in settings.', snackPosition: SnackPosition.BOTTOM);
-      }
-
-      else {
+      } else if (await Permission.location.isPermanentlyDenied) {
+        // Show a dialog or snackbar asking the user to enable location in settings
+        Get.snackbar('Location Permission', 'Please enable location permission in settings.', snackPosition: SnackPosition.BOTTOM);
+      } else {
         // Handle the case when permission is denied
         print('Location permission is required to update vendor location.');
       }
@@ -205,7 +271,7 @@ Future<void> acceptLead(String leadId) async {
         print("Notification permission granted after request.");
       } else {
         print("Notification permission denied.");
-      }
-    }
-  }
+   }
+}
+}
 }

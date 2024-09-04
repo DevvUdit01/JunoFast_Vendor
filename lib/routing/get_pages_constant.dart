@@ -71,7 +71,7 @@ List<GetPage> getPage = [
 
     GetPage( 
      name: RoutesConstant.bookingpage,
-     page: ()=> const BookingPageView(),
+     page: ()=>  BookingPageView(),
      binding: BookingPageBinding(),
      transition: Transition.rightToLeft,
     ),
