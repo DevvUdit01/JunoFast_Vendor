@@ -82,19 +82,23 @@ class HomePageView extends GetView<HomePageController> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5),
-                      Text('Status: ${lead.status}'),
-                      const SizedBox(height: 5),
-                      Text('Pickup Location: ${lead.pickupLocation.latitude}, ${lead.pickupLocation.longitude}'),
-                      Text('Drop Location: ${lead.dropLocation.latitude}, ${lead.dropLocation.longitude}'),
-                      Text('Vehicle Type: ${lead.vehicleType}'),
-                      Text('Timestamp: ${formatTimestamp(lead.timestamp)}'),
-                      const SizedBox(height: 5),
-                      Text('Accepted By: ${lead.acceptedBy ?? "Not accepted yet"}'),
-                    ],
-                  ),
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    const SizedBox(height: 5),
+    Text('Status: ${lead.status}'),
+    const SizedBox(height: 5),
+    Text('Pickup Location: ${lead.pickupLocation.latitude}, ${lead.pickupLocation.longitude}'),
+    Text('Drop Location: ${lead.dropLocation.latitude}, ${lead.dropLocation.longitude}'),
+    Text('Vehicle Type: ${lead.vehicleType}'),
+    Text('Client Name: ${lead.clientName}'),  // Accessing clientName
+    Text('Client Number: ${lead.clientNumber}'),  // Accessing clientNumber
+    Text('Amount: ${lead.amount}'),  // Accessing amount
+    Text('Timestamp: ${formatTimestamp(lead.timestamp)}'),
+    const SizedBox(height: 5),
+    Text('Accepted By: ${lead.acceptedBy ?? "Not accepted yet"}'),
+  ],
+),
+
                   trailing: lead.status == 'pending'
                       ? ElevatedButton(
                           onPressed: () => controller.acceptLead(lead.id),

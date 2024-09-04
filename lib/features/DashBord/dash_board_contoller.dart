@@ -14,7 +14,7 @@ class DashBoardController extends GetxController{
    List<Widget> buildScreen (){
     return [
       const HomePageView(),
-      const BookingPageView(),
+      BookingPageView(),
       //const Center(child:  Text('Booking page')),
       const Center(child:  Text('Payment page')),
       // const Center(child:  Text('setting page')),

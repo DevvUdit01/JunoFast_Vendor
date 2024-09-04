@@ -10,7 +10,7 @@ class SplashScreenController extends GetxController {
   void onReady() {
     super.onReady();
       Timer(const Duration(seconds: 6), () {
-        Get.offAllNamed(RoutesConstant.loginpage);
+        Get.offAllNamed(RoutesConstant.dashpage);
     });
 
    // chekLoginStatus();
