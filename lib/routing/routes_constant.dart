@@ -8,4 +8,5 @@ class RoutesConstant{
   static String setting='/setting_page_view';
   static String formPage='/formpage_view';
   static String bookingpage = '/bookingpage_view';
+  static String verifyEmailOTP = '/verifyEmailOTP';
 }

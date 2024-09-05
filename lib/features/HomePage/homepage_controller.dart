@@ -112,114 +112,117 @@ class HomePageController extends GetxController {
   }
 
   Future<void> acceptLead(String leadId) async {
-  // Show a dialog for transportation details
-  TextEditingController driverNameController = TextEditingController();
-  TextEditingController driverNumberController = TextEditingController();
-  TextEditingController vehicleDetailsController = TextEditingController();
-  TextEditingController vehicleNumberController = TextEditingController();
+    // Show a dialog for transportation details
+    TextEditingController driverNameController = TextEditingController();
+    TextEditingController driverNumberController = TextEditingController();
+    TextEditingController vehicleDetailsController = TextEditingController();
+    TextEditingController vehicleNumberController = TextEditingController();
 
-  Get.defaultDialog(
-    title: 'Transportation Details',
-    content: Column(
-      children: [
-        TextField(
-          controller: driverNameController,
-          decoration: InputDecoration(labelText: 'Driver Name'),
-        ),
-        TextField(
-          controller: driverNumberController,
-          decoration: InputDecoration(labelText: 'Driver Number'),
-        ),
-        TextField(
-          controller: vehicleDetailsController,
-          decoration: InputDecoration(labelText: 'Vehicle Details'),
-        ),
-        TextField(
-          controller: vehicleNumberController,
-          decoration: InputDecoration(labelText: 'Vehicle Number'),
-        ),
-      ],
-    ),
-    textConfirm: 'Submit',
-    textCancel: 'Cancel',
-    onConfirm: () async {
-      String driverName = driverNameController.text;
-      String driverNumber = driverNumberController.text;
-      String vehicleDetails = vehicleDetailsController.text;
-      String vehicleNumber = vehicleNumberController.text;
+    Get.defaultDialog(
+      title: 'Transportation Details',
+      content: Column(
+        children: [
+          TextField(
+            controller: driverNameController,
+            decoration: InputDecoration(labelText: 'Driver Name'),
+          ),
+          TextField(
+            controller: driverNumberController,
+            decoration: InputDecoration(labelText: 'Driver Number'),
+          ),
+          TextField(
+            controller: vehicleDetailsController,
+            decoration: InputDecoration(labelText: 'Vehicle Details'),
+          ),
+          TextField(
+            controller: vehicleNumberController,
+            decoration: InputDecoration(labelText: 'Vehicle Number'),
+          ),
+        ],
+      ),
+      textConfirm: 'Submit',
+      textCancel: 'Cancel',
+      onConfirm: () async {
+        String driverName = driverNameController.text;
+        String driverNumber = driverNumberController.text;
+        String vehicleDetails = vehicleDetailsController.text;
+        String vehicleNumber = vehicleNumberController.text;
 
-      // Ask for confirmation before proceeding
-      Get.defaultDialog(
-        title: 'Confirm Details',
-        content: Text('Are you sure you want to submit these details?'),
-        textConfirm: 'Yes',
-        textCancel: 'No',
-        onConfirm: () async {
-          Get.back(); // Close the confirmation dialog
-          Get.back(); // Close the transportation details dialog
+        // Ask for confirmation before proceeding
+        Get.defaultDialog(
+          title: 'Confirm Details',
+          content: Text('Are you sure you want to submit these details?'),
+          textConfirm: 'Yes',
+          textCancel: 'No',
+          onConfirm: () async {
+            Get.back(); // Close the confirmation dialog
+            Get.back(); // Close the transportation details dialog
 
-          // Proceed with updating the lead
-          await _updateLeadWithTransportationDetails(
-            leadId,
-            driverName,
-            driverNumber,
-            vehicleDetails,
-            vehicleNumber,
-          );
-        },
-      );
-    },
-  );
-}
+            // Proceed with updating the lead
+            await _updateLeadWithTransportationDetails(
+              leadId,
+              driverName,
+              driverNumber,
+              vehicleDetails,
+              vehicleNumber,
+            );
+          },
+        );
+      },
+    );
+  }
 
-Future<void> _updateLeadWithTransportationDetails(
-  String leadId,
-  String driverName,
-  String driverNumber,
-  String vehicleDetails,
-  String vehicleNumber,
-) async {
-  try {
-    DocumentSnapshot leadDoc = await _firestore.collection('leads').doc(leadId).get();
-    if (!leadDoc.exists) {
-      Get.snackbar('Error', 'Lead not found', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-      return;
-    }
+  Future<void> _updateLeadWithTransportationDetails(
+    String leadId,
+    String driverName,
+    String driverNumber,
+    String vehicleDetails,
+    String vehicleNumber,
+  ) async {
+    try {
+      DocumentSnapshot leadDoc = await _firestore.collection('leads').doc(leadId).get();
+      if (!leadDoc.exists) {
+        Get.snackbar('Error', 'Lead not found', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+        return;
+      }
 
-    // Update lead document with transportation details
-    await _firestore.collection('leads').doc(leadId).update({
-      'acceptedBy': vendorId,
-      'status': 'processing',
-      'driverName': driverName,
-      'driverNumber': driverNumber,
-      'vehicleDetails': vehicleDetails,
-      'vehicleNumber': vehicleNumber,
-    });
-
-    // Move lead to bookings collection using the same lead ID
-    DocumentSnapshot leadDocAfterUpdate = await _firestore.collection('leads').doc(leadId).get();
-    Map<String, dynamic>? leadData = leadDocAfterUpdate.data() as Map<String, dynamic>?;
-
-    if (leadData != null) {
-      // Add vendorId to the lead data
-      leadData['acceptedBy'] = vendorId;
+      // Update lead document with transportation details
+      await _firestore.collection('leads').doc(leadId).update({
+        'acceptedBy': vendorId,
+        'status': 'processing',
+        'driverName': driverName,
+        'driverNumber': driverNumber,
+        'vehicleDetails': vehicleDetails,
+        'vehicleNumber': vehicleNumber,
+      });
 
       // Move lead to bookings collection using the same lead ID
-      await _firestore.collection('bookings').doc(leadId).set(leadData);
+      DocumentSnapshot leadDocAfterUpdate = await _firestore.collection('leads').doc(leadId).get();
+      Map<String, dynamic>? leadData = leadDocAfterUpdate.data() as Map<String, dynamic>?;
 
-      // Delete the lead from leads collection
-      await _firestore.collection('leads').doc(leadId).delete();
-      print('Lead moved to bookings with booking ID $leadId and deleted from leads.');
+      if (leadData != null) {
+        // Add vendorId to the lead data
+        leadData['acceptedBy'] = vendorId;
 
-      Get.snackbar('Success', 'Lead accepted and moved to bookings!', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
-    } else {
-      Get.snackbar('Error', 'Failed to fetch lead data', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+        // Move lead to bookings collection using the same lead ID
+        await _firestore.collection('bookings').doc(leadId).set(leadData);
+
+        // Delete the lead from leads collection
+        await _firestore.collection('leads').doc(leadId).delete();
+        print('Lead moved to bookings with booking ID $leadId and deleted from leads.');
+
+         // Create payment document with empty fields
+        await _createPaymentEntry(leadId, leadData['amount'], leadData['leadDetails']);
+
+        Get.snackbar('Success', 'Lead accepted and moved to bookings!', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+      } else {
+        Get.snackbar('Error', 'Failed to fetch lead data', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to accept lead: $e', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+      print('Error: $e');
     }
-  } catch (e) {
-    Get.snackbar('Error', 'Failed to accept lead: $e', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-    print('Error: $e');
   }
-}
 
   Future<void> _checkAndUpdateVendorLocation() async {
     final status = await Permission.location.status;
@@ -239,6 +242,7 @@ Future<void> _updateLeadWithTransportationDetails(
       await _updateVendorLocation();
     }
   }
+
 
   Future<void> _updateVendorLocation() async {
     try {
@@ -274,4 +278,29 @@ Future<void> _updateLeadWithTransportationDetails(
    }
 }
 }
+
+Future<void> _createPaymentEntry(String bookingId, double amount, Map<String, dynamic>? leadDetails) async {
+  try {
+    // Ensure totalAmount is not null, provide a default value if needed
+    //double amount = amount;
+
+    // Provide a default empty map if leadDetails is null
+    Map<String, dynamic> details = leadDetails ?? {};
+
+    // Create a payment entry in Firestore under 'payments' collection with the bookingId as the document ID
+    await _firestore.collection('payments').doc(bookingId).set({
+      'totalAmount': amount,
+      'leadDetails': details,
+      'vendorId': vendorId, // Vendor ID associated with the payment
+      'bookingId': bookingId, // Reference to the booking ID
+    });
+
+    print('Payment entry created for booking ID $bookingId.');
+  } catch (e) {
+    // Handle any errors that occur while creating the payment entry
+    print('Error creating payment entry: $e');
+    Get.snackbar('Error', 'Failed to create payment entry', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+  }
+}
+
 }

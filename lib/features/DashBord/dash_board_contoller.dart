@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_view.dart';
+import 'package:junofast_vendor/features/PaymentPage/paymentpage_view.dart';
 import 'package:junofast_vendor/features/settingspage/setting_page_view.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
@@ -15,8 +16,7 @@ class DashBoardController extends GetxController{
     return [
       const HomePageView(),
        BookingPageView(),
-      //const Center(child:  Text('Booking page')),
-      const Center(child:  Text('Payment page')),
+       PaymentPageView(),
       // const Center(child:  Text('setting page')),
       const SettingPageView(),
   

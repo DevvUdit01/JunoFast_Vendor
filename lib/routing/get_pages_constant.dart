@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:junofast_vendor/emailverificationpage/emailVerificationpage_binding.dart';
+import 'package:junofast_vendor/emailverificationpage/emailVerificationpage_view.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_binding.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_view.dart';
 import '../features/DashBord/dash_board_binding.dart';
@@ -73,6 +75,12 @@ List<GetPage> getPage = [
      name: RoutesConstant.bookingpage,
      page: ()=>  BookingPageView(),
      binding: BookingPageBinding(),
+     transition: Transition.rightToLeft,
+    ),
+    GetPage( 
+     name: RoutesConstant.verifyEmailOTP,
+     page: ()=>  EmailVerificationPageView(),
+     binding: EmailVerificationPageBinding(),
      transition: Transition.rightToLeft,
     ),
 ];

@@ -100,16 +100,18 @@ void updateLead(BuildContext context, Booking booking) {
               final scheduleTime = timeController.text;
 
               if (amount != null && scheduleTime.isNotEmpty && selectedDate != null) {
-                // Format the selected date as a string (e.g., 'yyyy-MM-dd')
                 final formattedDate = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
 
-                // Update the booking in Firestore with pickupDate as a String
+                // Update the booking with the new amount, schedule time, and pickup date
                 await _firestore.collection('bookings').doc(booking.id).update({
                   'amount': amount,
                   'scheduleTime': scheduleTime,
-                  'pickupDate': formattedDate,  // Store as String
+                  'pickupDate': formattedDate,
                   'status': 'ongoing',
                 });
+
+                // Update the total amount in the payment collection
+                await updateTotalAmountInPayment(booking.id, amount);
 
                 Navigator.of(context).pop(); // Close dialog
               } else {
@@ -123,6 +125,38 @@ void updateLead(BuildContext context, Booking booking) {
     },
   );
 }
+
+Future<void> updateTotalAmountInPayment(String bookingId, double updatedAmount) async {
+  try {
+    // Fetch the current payment document for this booking
+    DocumentSnapshot paymentDoc = await _firestore.collection('payments').doc(bookingId).get();
+
+    if (paymentDoc.exists) {
+      // Get the current total amount from the payment document
+      //double currentTotal = paymentDoc['totalAmount'] ?? 0.0;
+
+      // Calculate the new total by adding the updated amount
+      //double newTotal = currentTotal + updatedAmount;
+
+      // Update the total amount in the payment collection
+      await _firestore.collection('payments').doc(bookingId).update({
+        'totalAmount': updatedAmount,
+      });
+
+      print('Total amount updated successfully.');
+    } else {
+      // If the payment document doesn't exist, create a new one
+      await _firestore.collection('payment').doc(bookingId).set({
+        'totalAmount': updatedAmount,
+      });
+
+      print('New payment document created with total amount.');
+    }
+  } catch (e) {
+    print('Error updating total amount in payment: $e');
+  }
+}
+
  void markBookingAsCompleted(BuildContext context, Booking booking) {
     showDialog(
       context: context,
