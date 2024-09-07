@@ -1,54 +1,31 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VendorModel {
   late String name;
   late String email;
   late String mobileNumber;
+  late String firm;
   late String password;
+  late String conformPassword;
   late String address;
-
   late String vehicleType;
-  late String yearOfManufacture;
-  late String vehicleModel;
-  late String licensePlateNumber;
-  late String vehicleIdentificationNumber;
-  late String vehicleRegistration;
-
-  late String licenseNumber;
-  late String expDateOfLicense;
-  late String licenseImageUrl;  // Store the download URL
-  late String operatingState;
-  late String nationalId;
-
-  late String insuranceProvider;
-  late String expDateOfInsurance;
-  late String policyNumber;
-  late String proofOfInsurance;
-
+  late String role;
+  late String packing;
+  late bool registerFirm;
   late List booking;
 
   VendorModel({
     required this.name,
     required this.email,
     required this.mobileNumber,
-    required this.address,
+    required this.firm,
     required this.password,
+    required this.conformPassword,
+    required this.address,
     required this.vehicleType,
-    required this.yearOfManufacture,
-    required this.vehicleModel,
-    required this.licensePlateNumber,
-    required this.vehicleIdentificationNumber,
-    required this.vehicleRegistration,
-    required this.licenseNumber,
-    required this.expDateOfLicense,
-    required this.licenseImageUrl,
-    required this.operatingState,
-    required this.nationalId,
-    required this.insuranceProvider,
-    required this.expDateOfInsurance,
-    required this.policyNumber,
-    required this.proofOfInsurance,
+    required this.role,
+    required this.packing,
+    required this.registerFirm,
     required this.booking,
   });
 
@@ -57,24 +34,15 @@ class VendorModel {
       name: doc['name'],
       email: doc['email'],
       mobileNumber: doc['mobileNumber'],
-      address: doc['address'],
+      firm: doc['firm'],
       password: doc['password'],
+      conformPassword: doc['conformPassword'],
+      address: doc['address'],
       vehicleType: doc['vehicleType'],
-      yearOfManufacture: doc['yearOfManufacture'],
-      vehicleModel: doc['vehicleModel'],
-      licensePlateNumber: doc['licensePlateNumber'],
-      vehicleIdentificationNumber: doc['vehicleIdentificationNumber'],
-      vehicleRegistration: doc['vehicleRegistration'],
-      licenseNumber: doc['licenseNumber'],
-      expDateOfLicense: doc['expDateOfLicense'],
-      licenseImageUrl: doc['licenseImageUrl'], // Retrieve the download URL
-      operatingState: doc['operatingState'],
-      nationalId: doc['nationalId'],
-      insuranceProvider: doc['insuranceProvider'],
-      expDateOfInsurance: doc['expDateOfInsurance'],
-      policyNumber: doc['policyNumber'],
-      proofOfInsurance: doc['proofOfInsurance'],
-      booking: doc['booking'],
+      role: doc['role'],
+      packing: doc['packing'],
+      registerFirm: doc['registerFirm'],
+      booking: List.from(doc['booking']),
     );
   }
 
@@ -83,23 +51,14 @@ class VendorModel {
       'name': name,
       'email': email,
       'mobileNumber': mobileNumber,
-      'address': address,
+      'firm': firm,
       'password': password,
+      'conformPassword': conformPassword,
+      'address': address,
       'vehicleType': vehicleType,
-      'yearOfManufacture': yearOfManufacture,
-      'vehicleModel': vehicleModel,
-      'licensePlateNumber': licensePlateNumber,
-      'vehicleIdentificationNumber': vehicleIdentificationNumber,
-      'vehicleRegistration': vehicleRegistration,
-      'licenseNumber': licenseNumber,
-      'expDateOfLicense': expDateOfLicense,
-      'licenseImageUrl': licenseImageUrl, // Save the download URL
-      'operatingState': operatingState,
-      'nationalId': nationalId,
-      'insuranceProvider': insuranceProvider,
-      'expDateOfInsurance': expDateOfInsurance,
-      'policyNumber': policyNumber,
-      'proofOfInsurance': proofOfInsurance,
+      'role': role,
+      'packing': packing,
+      'registerFirm': registerFirm,
       'booking': booking,
     };
   }

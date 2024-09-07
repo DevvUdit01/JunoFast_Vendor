@@ -1,25 +1,31 @@
 import 'package:email_auth/email_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:junofast_vendor/UIHelper/ui_helper.dart';
 import 'package:junofast_vendor/routing/routes_constant.dart';
+
+import '../../core/VendorModel/Vendor_model.dart';
+import '../../firebasServices/auth_services.dart';
 
 class SignUpPageController2 extends GetxController {
 //   RxBool isSet = true.obs;
   final signupKey = GlobalKey<FormState>();
+  TextEditingController otpcontroller = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController cpasswordController = TextEditingController();
-  TextEditingController addressesController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
   TextEditingController firmController = TextEditingController();
-  TextEditingController otpcontroller = TextEditingController();
   var packing = ''.obs;
   var role = ''.obs;
   var termCondition = false.obs;
   var registerFirm = false.obs;
   late EmailAuth emailAuth;
+  String? typeOfVehicleRequired;
 
   var remoteServerConfiguration = {
     "server":"https://mail-about.herokuapp.com",
@@ -45,18 +51,23 @@ class SignUpPageController2 extends GetxController {
       if (signupKey.currentState!.validate()) {
         // Proceed if the form is valid
         if (packing.isEmpty) {
+          Get.snackbar('Required','check packing',backgroundColor: Colors.red);
           print('check packing');
         } else if (role.isEmpty) {
+          Get.snackbar('Required','check role',backgroundColor: Colors.red);
           print('check role');
         } else if (termCondition == false) {
+          Get.snackbar('Required','check term and condition',backgroundColor: Colors.red);
           print('check term and condition');
         } else if (registerFirm == false) {
+          Get.snackbar('Required','check register firm',backgroundColor: Colors.red);
           print('check register firm');
-        } else {
-          // Get.offAllNamed(RoutesConstant.phoneAuth,
-          //     arguments: phoneController.text);
-           sendOtp();
-         // Get.toNamed(RoutesConstant.verifyEmailOTP);
+        }else if(passwordController.text != cpasswordController.text){
+            Get.snackbar('Error','Please Match password and conform password',backgroundColor: Colors.red);
+        }
+         else {
+          signUp();
+
           print('valid form');
         }
         // signUp();
@@ -71,32 +82,32 @@ class SignUpPageController2 extends GetxController {
       return;
     }
   }
+  void signUp() async {
+  VendorModel vendor = VendorModel(
+    name: nameController.text.trim(),
+    email: emailController.text.trim(),
+    mobileNumber: mobileController.text.trim(),
+    firm: firmController.text.trim(),
+    password: passwordController.text.trim(),
+    conformPassword: cpasswordController.text.trim(),
+    address: addressController.text.trim(),
+    vehicleType: typeOfVehicleRequired!,
+    role: role.value,
+    packing: packing.value,
+    registerFirm: registerFirm.value,
+    booking: [], // Empty booking list initially
+  );
 
-//      void signUp() async {
-//     VendorModel vendor = VendorModel(
-//       name: nameController.text,
-//       email: emailController.text,
-//       mobileNumber: mobileController.text,
-//       address: '123 Street Name',
-//       password: passwordController.text,
-//       vehicleType: 'Truck',
-//       expDateOfInsurance: '2025-12-31',
-//       policyNumber: 'POL123456',
-//       proofOfInsurance: '',
-//       booking: [],
-//     );
-
-//     User? user = await AuthService.signUpWithEmailAndPassword(vendor);
-//     if (user != null) {
-//       print('Sign up successful!');
-//        Get.snackbar('Login', 'Login successfull ',backgroundColor: Color(0xFF12FD1A));
-//         Get.offAllNamed(RoutesConstant.dashpage);
-//     } else {
-//       print('Sign up failed.');
-//       Get.back();
-//        Get.snackbar('Sign Up', 'Sign up failed. ',backgroundColor: Color(0xFFFD1212));
-//     }
-//   }
+    User? user = await AuthService.signUpWithEmailAndPassword(vendor);
+    if (user != null) {
+       Get.snackbar('Sign Up', 'User Create successfully ',backgroundColor: Color(0xFF12FD1A));
+        Get.offAllNamed(RoutesConstant.dashpage);
+    } else {
+      print('Sign up failed.');
+      Get.back();
+       Get.snackbar('Sign Up', 'Sign up failed. ',backgroundColor: Color(0xFFFD1212));
+    }
+  }
 
   String selectPacking(String selectedPaking) {
     if (selectedPaking == 'Yes') {
@@ -152,5 +163,9 @@ class SignUpPageController2 extends GetxController {
     Get.snackbar('Error', 'An error occurred while sending OTP.');
   }
 }
+
+  void loginWithGoogle() async{
+    await AuthService.signUpWithGoogle();
+  }
 
 }

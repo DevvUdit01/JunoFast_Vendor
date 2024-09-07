@@ -15,6 +15,7 @@ class SignUpPageController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController cpasswordController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
   
   void checkValidation() {
   if (signupKey.currentState != null) {  // Check if formKey.currentState is not null
@@ -23,7 +24,7 @@ class SignUpPageController extends GetxController {
       print(
       'valid form'
       );
-      signUp();
+     // signUp();
      // Get.toNamed('/nextPage');  // Replace wit h your route
     } else {
       // Show error if the form is invalid
@@ -35,30 +36,21 @@ class SignUpPageController extends GetxController {
 }
 
 
-     void signUp() async {
-    VendorModel vendor = VendorModel(
-      name: nameController.text,
-      email: emailController.text,
-      mobileNumber: mobileController.text,
-      address: '123 Street Name',
-      password: passwordController.text,
-      vehicleType: 'Truck',
-      yearOfManufacture: '2020',
-      vehicleModel: 'Model X',
-      licensePlateNumber: 'ABC123',
-      vehicleIdentificationNumber: 'VIN123456',
-      vehicleRegistration: 'REG123456',
-      licenseNumber: 'LIC123456',
-      expDateOfLicense: '2025-12-31',
-      licenseImageUrl: '',
-      operatingState: 'State X',
-      nationalId: 'NID123456',
-      insuranceProvider: 'Insurance Co',
-      expDateOfInsurance: '2025-12-31',
-      policyNumber: 'POL123456',
-      proofOfInsurance: '',
-      booking: [],
-    );
+   void signUp() async {
+  VendorModel vendor = VendorModel(
+    name: nameController.text.trim(),
+    email: emailController.text.trim(),
+    mobileNumber: mobileController.text.trim(),
+    firm: nameController.text.trim(),
+    password: passwordController.text.trim(),
+    conformPassword: cpasswordController.text.trim(),
+    address: addressController.text.trim(),
+    vehicleType: 'Truck',
+    role: 'Fleet Owner',
+    packing: 'Yes',
+    registerFirm: true,
+    booking: [], // Empty booking list initially
+  );
 
     User? user = await AuthService.signUpWithEmailAndPassword(vendor);
     if (user != null) {

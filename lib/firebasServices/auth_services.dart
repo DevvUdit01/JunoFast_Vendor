@@ -31,7 +31,6 @@ class AuthService {
 
   // Login with email and password
   static  Future<User?> loginWithEmailAndPassword(String email, String password) async {
-
     try {
       customDialog();
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -40,10 +39,12 @@ class AuthService {
       );
       return userCredential.user;
     } on FirebaseAuthException catch (e) {
-      print('Error: $e');
+      Get.back();
+      Get.snackbar('Error', e.code.toString(),backgroundColor: Colors.red);
       return null;
     }
   }
+
    // login with google
    static Future<void> signUpWithGoogle() async {
     try {

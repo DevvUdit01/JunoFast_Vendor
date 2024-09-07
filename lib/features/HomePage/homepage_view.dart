@@ -31,7 +31,7 @@ class HomePageView extends GetView<HomePageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Color(0xFFF69F1C),
       drawer: Drawer(
         width: MediaQuery.of(context).size.width * 0.5,
         child: ListView(
@@ -69,7 +69,7 @@ class HomePageView extends GetView<HomePageController> {
       ),
       appBar: AppBar(
         title: const Text('Leads'),
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.transparent,
       ),
       body: Obx(() {
         if (controller.leads.isEmpty) {

@@ -1,6 +1,4 @@
 import 'package:get/get.dart';
-import 'package:junofast_vendor/emailverificationpage/emailVerificationpage_binding.dart';
-import 'package:junofast_vendor/emailverificationpage/emailVerificationpage_view.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_binding.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_view.dart';
 import 'package:junofast_vendor/features/Forget%20Password/forgotpasswordpage_binding.dart';
@@ -13,6 +11,8 @@ import '../features/Form_DetailsPage/formpage_binding.dart';
 import '../features/Form_DetailsPage/formpage_view.dart';
 import '../features/HomePage/homepage_binding.dart';
 import '../features/HomePage/homepage_view.dart';
+import '../features/emailverificationpage/emailVerificationpage_binding.dart';
+import '../features/emailverificationpage/emailVerificationpage_view.dart';
 import '../features/login/login_page_binding.dart';
 import '../features/login/login_page_view.dart';
 import '../features/phone_authpage/phone_auth_binding.dart';
@@ -83,20 +83,20 @@ List<GetPage> getPage = [
     ),
     GetPage( 
      name: RoutesConstant.verifyEmailOTP,
-     page: ()=>  EmailVerificationPageView(),
+     page: ()=>  const EmailVerificationPageView(),
      binding: EmailVerificationPageBinding(),
      transition: Transition.rightToLeft,
     ),
     GetPage( 
      name: RoutesConstant.forgotPassword,
-     page: ()=>  ForgotPasswprdPageView(),
+     page: ()=>  const ForgotPasswprdPageView(),
      binding: ForgotPasswprdPageBinding(),
      transition: Transition.rightToLeft,
     ),
 
     GetPage( 
     name: RoutesConstant.signuppage2,
-     page: ()=>  SignUpPageView2(),
+     page: ()=>  const SignUpPageView2(),
      binding: SignUpPageBinding2(),
      transition: Transition.rightToLeft,
      ),

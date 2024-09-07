@@ -18,7 +18,7 @@ class ForgotPasswprdPageView extends GetView<ForgotPasswprdPageController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Forgot Password '),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.orange,
       body: Center(

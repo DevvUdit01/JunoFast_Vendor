@@ -10,11 +10,11 @@ class ForgotPasswprdPageController extends GetxController{
 
   void sendOTP()async {
    await auth.sendPasswordResetEmail(email: emailController.text.trim()).then((value){
-   // Utils().toastMessage('We have sent you email to recover password, please check email.');
-   print('send reset password link on your email');
+     // Utils().toastMessage('We have sent you email to recover password, please check email.');
+      Get.snackbar("Success", "We have sent you email to recover password, please check email.",backgroundColor: const Color(0xFF27F52E));
    }).onError((error,StackTrace){
-    // Utils().toastMessage(error.toString());
-    print('error occured');
+      // Utils().toastMessage(error.toString());
+       Get.snackbar("Failed", error.toString(),backgroundColor:  Colors.red);
    });
   }
 

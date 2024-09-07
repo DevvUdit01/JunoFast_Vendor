@@ -1,23 +1,42 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:geocoding/geocoding.dart'; // Add this import for geocoding
-import 'package:junofast_vendor/core/model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoding/geocoding.dart';
 
+import '../../core/model.dart';
 import 'bookingpage_controller.dart';
 
 class BookingPageView extends StatelessWidget {
   final BookingPageController controller = Get.put(BookingPageController());
 
+  BookingPageView({super.key});
+   // Define colors based on the theme
+    Color primaryColor = Colors.white;
+    Color secondaryColor = Colors.orange;
   @override
   Widget build(BuildContext context) {
+   
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Bookings'),
-          bottom: const TabBar(
-            tabs: [
+          backgroundColor: secondaryColor,
+          elevation: 2,
+          iconTheme: IconThemeData(color: secondaryColor),
+          title: Text(
+            'Bookings',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
+          bottom: TabBar(
+            labelColor: primaryColor,
+            indicatorColor: primaryColor,
+            unselectedLabelColor: const Color.fromRGBO(189, 187, 187, 1),
+            tabs: const [
               Tab(text: 'Ongoing'),
               Tab(text: 'Completed'),
             ],
@@ -34,22 +53,54 @@ class BookingPageView extends StatelessWidget {
                   itemCount: controller.ongoingBookings.length,
                   itemBuilder: (context, index) {
                     final booking = controller.ongoingBookings[index];
-                    return ListTile(
-                      title: Text('Booking ID: ${booking.id}'),
-                      subtitle: Text('Status: ${booking.status}'),
-                      trailing: booking.status == 'processing'
-                          ? ElevatedButton(
-                              onPressed: () =>
-                                  controller.updateLead(context, booking),
-                              child: const Text('Update'),
-                            )
-                          : ElevatedButton(
-                              onPressed: () =>
-                                  controller.markBookingAsCompleted(
-                                      context, booking),
-                              child: const Text('Mark as Completed'),
-                            ),
-                      onTap: () => _showBookingDetailsDialog(context, booking),
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        side: BorderSide(
+                            color: secondaryColor, width: 1.5), // Orange border
+                      ),
+                      elevation: 5,
+                      color: primaryColor, // White background
+                      child: ListTile(
+                        title: Text(
+                          'Booking ID: ${booking.id}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                            color: secondaryColor, // Orange for Booking ID
+                          ),
+                        ),
+                        subtitle: Text(
+                          'Status: ${booking.status}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                            color: Colors.black, // Black for status
+                          ),
+                        ),
+                        trailing: booking.status == 'processing'
+                            ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: secondaryColor,
+                                ),
+                                onPressed: () =>
+                                    controller.updateLead(context, booking),
+                                child: const Text('Update'),
+                              )
+                            : ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: secondaryColor,
+                                ),
+                                onPressed: () =>
+                                    controller.markBookingAsCompleted(
+                                        context, booking),
+                                child: const Text('Mark as Completed'),
+                              ),
+                        onTap: () =>
+                            _showBookingDetailsDialog(context, booking),
+                      ),
                     );
                   },
                 );
@@ -64,10 +115,28 @@ class BookingPageView extends StatelessWidget {
                   itemCount: controller.completedBookings.length,
                   itemBuilder: (context, index) {
                     final booking = controller.completedBookings[index];
-                    return ListTile(
-                      title: Text('Booking ID: ${booking.id}'),
-                      subtitle: Text('Status: ${booking.status}'),
-                      onTap: () => _showBookingDetailsDialog(context, booking),
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      color: primaryColor,
+                      child: ListTile(
+                        title: Text(
+                          'Booking ID: ${booking.id}',
+                          style: TextStyle(
+                            color: secondaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        subtitle: Text('Status: ${booking.status}',
+                            style: const TextStyle(
+                                fontSize: 16.0, color: Colors.black)),
+                        onTap: () =>
+                            _showBookingDetailsDialog(context, booking),
+                      ),
                     );
                   },
                 );
@@ -79,7 +148,8 @@ class BookingPageView extends StatelessWidget {
     );
   }
 
-  Future<void> _showBookingDetailsDialog(BuildContext context, Booking booking) async {
+  Future<void> _showBookingDetailsDialog(
+      BuildContext context, Booking booking) async {
     // Convert GeoPoint to real addresses
     String pickupAddress = await _getAddressFromGeoPoint(booking.pickupLocation);
     String dropAddress = await _getAddressFromGeoPoint(booking.dropLocation);
@@ -88,11 +158,19 @@ class BookingPageView extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Booking Details'),
+          backgroundColor: primaryColor,
+          title: Text(
+            'Booking Details',
+            style: TextStyle(
+              color: secondaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Text('Booking ID: ${booking.id}'),
+                Text('Booking ID: ${booking.id}',
+                    style: TextStyle(color: secondaryColor)),
                 Text('Client Name: ${booking.clientName}'),
                 Text('Client Number: ${booking.clientNumber}'),
                 Text('Vehicle Type: ${booking.vehicleType}'),
@@ -111,7 +189,10 @@ class BookingPageView extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close'),
+              child: Text(
+                'Close',
+                style: TextStyle(color: secondaryColor),
+              ),
             ),
           ],
         );
@@ -119,20 +200,19 @@ class BookingPageView extends StatelessWidget {
     );
   }
 
-Future<String> _getAddressFromGeoPoint(GeoPoint geoPoint) async {
-  try {
-    print('Geocoding for: Latitude ${geoPoint.latitude}, Longitude ${geoPoint.longitude}');
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      geoPoint.latitude,
-      geoPoint.longitude,
-    );
-    if (placemarks.isNotEmpty) {
-      final placemark = placemarks.first;
-      return "${placemark.street}, ${placemark.locality}, ${placemark.postalCode}, ${placemark.country}";
+  Future<String> _getAddressFromGeoPoint(GeoPoint geoPoint) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        geoPoint.latitude,
+        geoPoint.longitude,
+      );
+      if (placemarks.isNotEmpty) {
+        final placemark = placemarks.first;
+        return "${placemark.street}, ${placemark.locality}, ${placemark.postalCode}, ${placemark.country}";
+      }
+    } catch (e) {
+      print('Error getting address: $e');
     }
-  } catch (e) {
-    print('Error getting address: $e');
+    return 'Address not available';
   }
-  return 'Address not available';
-}
 }

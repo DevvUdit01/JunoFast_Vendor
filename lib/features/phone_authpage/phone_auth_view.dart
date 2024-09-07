@@ -12,9 +12,9 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.orange,
         appBar: AppBar(
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.transparent,
           title: const Text('Phone Authentication'),
           centerTitle: true,
         ),

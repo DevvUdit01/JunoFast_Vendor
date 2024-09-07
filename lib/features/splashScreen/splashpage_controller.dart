@@ -11,7 +11,7 @@ class SplashScreenController extends GetxController {
   void onReady() {
     super.onReady();
       Timer(const Duration(seconds: 6), () {
-        Get.toNamed(
+        Get.offAllNamed(
         (FirebaseAuth.instance.currentUser != null) ? RoutesConstant.dashpage:RoutesConstant.loginpage,);
     });
 

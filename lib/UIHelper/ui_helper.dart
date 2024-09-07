@@ -21,7 +21,7 @@ Padding customTextField(String lable,String hintText,TextInputType inputType,
           fillColor: Colors.white.withOpacity(0.8),
           label:  Text(lable),
           hintStyle: const TextStyle(
-            fontSize: 12,
+            fontSize: 16,
             color: Colors.grey,
           ),
       ),
