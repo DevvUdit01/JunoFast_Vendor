@@ -1,6 +1,7 @@
 
 //import 'dart:async';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:junofast_vendor/routing/routes_constant.dart';
 //import 'package:uber_udit/routes/Routing/route_constant.dart';
@@ -10,7 +11,8 @@ class SplashScreenController extends GetxController {
   void onReady() {
     super.onReady();
       Timer(const Duration(seconds: 6), () {
-        Get.offAllNamed(RoutesConstant.loginpage);
+        Get.toNamed(
+        (FirebaseAuth.instance.currentUser != null) ? RoutesConstant.dashpage:RoutesConstant.loginpage,);
     });
 
    // chekLoginStatus();

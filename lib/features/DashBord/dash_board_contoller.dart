@@ -16,8 +16,7 @@ class DashBoardController extends GetxController{
     return [
       const HomePageView(),
        BookingPageView(),
-       PaymentPageView(),
-      // const Center(child:  Text('setting page')),
+       PaymentPageView(),      // const Center(child:  Text('setting page')),
       const SettingPageView(),
   
     ];
@@ -52,7 +51,7 @@ class DashBoardController extends GetxController{
     ),
 
       PersistentBottomNavBarItem(
-      icon:const Icon(Icons.person,size: 30,color: Colors.white,),
+      icon:const Icon(Icons.settings,size: 30,color: Colors.white,),
       title: ("Setting"),
       activeColorPrimary: Colors.blue,
      inactiveColorPrimary: const Color(0xFFA7A6A6),

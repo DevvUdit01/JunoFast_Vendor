@@ -42,7 +42,9 @@ class LoginPageView extends GetView<LoginPageController> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                            onPressed: () {}, child: const Text('Forgot password')),
+                            onPressed: () {
+                              Get.toNamed(RoutesConstant.forgotPassword);
+                            }, child: const Text('Forgot password?')),
                       ],
                     ),
                   ),
@@ -53,6 +55,7 @@ class LoginPageView extends GetView<LoginPageController> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
+                      fixedSize: Size(230, 55),
                       padding: EdgeInsets.symmetric(
                       horizontal: buttonPadding, vertical: 15),
                       textStyle: const TextStyle(fontSize: 18),
@@ -65,33 +68,27 @@ class LoginPageView extends GetView<LoginPageController> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                        top: 15.0, left: 25, right: 25, bottom: 40),
+                        top: 45.0, left: 55, right: 55, bottom: 40),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                            width: 75,
-                            height: 45,
-                            child: InkWell(
-                                onTap: () {
-                                    controller.loginWithFacebook();
-                                },
-                                child: const Center(
-                                  child: Image(image: AssetImage('assets/google.png'),width: 30,),
-                                  ))),
-                        SizedBox(
-                            width: 75,
-                            height: 45,
-                            child: InkWell(
-                                onTap: () {
-                                  Get.toNamed(RoutesConstant.phoneAuth);
-                                  // controller.loginWithPhone();
-                                },
-                                child: const Center(
-                                    child: Icon(
-                                  Icons.phone,
-                                  size: 32,
-                                )))),
+                        InkWell(
+                            onTap: () {
+                                controller.loginWithGoogle();
+                            },
+                            child: const Center(
+                              child: Image(image: AssetImage('assets/google.png'),width: 40,),
+                              )),
+                        InkWell(
+                            onTap: () {
+                              Get.toNamed(RoutesConstant.phoneAuth);
+                              // controller.loginWithPhone();
+                            },
+                            child: const Center(
+                                child: Icon(
+                              Icons.phone,
+                              size: 40,
+                            ))),
                       ],
                     ),
                   ),
@@ -103,7 +100,7 @@ class LoginPageView extends GetView<LoginPageController> {
                           style: TextStyle(fontSize: 16)),
                       GestureDetector(
                         onTap: () {
-                          Get.toNamed(RoutesConstant.signuppage);
+                          Get.toNamed(RoutesConstant.signuppage2);
                           // Navigate to sign up page
                         },
                         child: const Text("Sign Up",

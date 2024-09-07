@@ -12,15 +12,17 @@ class SplashScreenView extends GetView<SplashScreenController> {
       init: SplashScreenController(),
       builder: (controller) => Scaffold(
         backgroundColor: Colors.red,
-        body:Stack(
-        children: [
-          Image.asset(
-            'assets/jf_splashlogo.png',
-            height: double.infinity,
-            width: double.infinity,
-            fit: BoxFit.fill,
+        body:Center(
+          child: SizedBox(
+            height: 200,
+          child:
+            Image.asset(
+              'assets/jf_splashlogo.png',
+              height: double.infinity,
+              width: double.infinity-20,
+            ),
           ),
-        ]),
+        ),
       ),
     );
   }

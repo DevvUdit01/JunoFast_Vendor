@@ -3,6 +3,10 @@ import 'package:junofast_vendor/emailverificationpage/emailVerificationpage_bind
 import 'package:junofast_vendor/emailverificationpage/emailVerificationpage_view.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_binding.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_view.dart';
+import 'package:junofast_vendor/features/Forget%20Password/forgotpasswordpage_binding.dart';
+import 'package:junofast_vendor/features/Forget%20Password/forgotpasswordpage_view.dart';
+import 'package:junofast_vendor/features/signuppage2/signuppage2_binding.dart';
+import 'package:junofast_vendor/features/signuppage2/signuppage2_view.dart';
 import '../features/DashBord/dash_board_binding.dart';
 import '../features/DashBord/dash_board_pageview.dart';
 import '../features/Form_DetailsPage/formpage_binding.dart';
@@ -83,5 +87,18 @@ List<GetPage> getPage = [
      binding: EmailVerificationPageBinding(),
      transition: Transition.rightToLeft,
     ),
+    GetPage( 
+     name: RoutesConstant.forgotPassword,
+     page: ()=>  ForgotPasswprdPageView(),
+     binding: ForgotPasswprdPageBinding(),
+     transition: Transition.rightToLeft,
+    ),
+
+    GetPage( 
+    name: RoutesConstant.signuppage2,
+     page: ()=>  SignUpPageView2(),
+     binding: SignUpPageBinding2(),
+     transition: Transition.rightToLeft,
+     ),
 ];
 

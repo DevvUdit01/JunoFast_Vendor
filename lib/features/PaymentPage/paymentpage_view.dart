@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'paymentpage_controller.dart';
@@ -47,9 +49,9 @@ class PaymentPageView extends StatelessWidget {
             Map<String, dynamic> payment = paymentController.payments[index];
 
             // Extract payment details
-            String bookingId = payment['bookingId'] ?? 'N/A';
-            double totalAmount = payment['totalAmount'] ?? 0.0;
-            double amountReceived = payment['amountReceived'] ?? 0.0;
+            String bookingId = payment['bookingId'];
+            int totalAmount = payment['totalAmount'].toInt() ;
+            int amountReceived =payment['amountReceived'].toInt() ?? 0.0;
 
             return Card(
               margin: EdgeInsets.all(16.0),

@@ -18,7 +18,9 @@ class LoginPageController extends GetxController {
     return;
   }
 
-  void loginWithFacebook() {}
+  void loginWithGoogle() async{
+    await AuthService.signUpWithGoogle();
+  }
 
  
   void _login() async {
