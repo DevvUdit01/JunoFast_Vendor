@@ -3,12 +3,10 @@ import 'package:junofast_vendor/features/BookingPage/bookingpage_binding.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_view.dart';
 import 'package:junofast_vendor/features/Forget%20Password/forgotpasswordpage_binding.dart';
 import 'package:junofast_vendor/features/Forget%20Password/forgotpasswordpage_view.dart';
-import 'package:junofast_vendor/features/signuppage2/signuppage2_binding.dart';
-import 'package:junofast_vendor/features/signuppage2/signuppage2_view.dart';
+import 'package:junofast_vendor/features/signuppage/signuppage_binding.dart';
+import 'package:junofast_vendor/features/signuppage/signuppage_view.dart';
 import '../features/DashBord/dash_board_binding.dart';
 import '../features/DashBord/dash_board_pageview.dart';
-import '../features/Form_DetailsPage/formpage_binding.dart';
-import '../features/Form_DetailsPage/formpage_view.dart';
 import '../features/HomePage/homepage_binding.dart';
 import '../features/HomePage/homepage_view.dart';
 import '../features/emailverificationpage/emailVerificationpage_binding.dart';
@@ -19,8 +17,8 @@ import '../features/phone_authpage/phone_auth_binding.dart';
 import '../features/phone_authpage/phone_auth_view.dart';
 import '../features/settingspage/setting_page_binding.dart';
 import '../features/settingspage/setting_page_view.dart';
-import '../features/signuppage/signuppage_binding.dart';
-import '../features/signuppage/signuppage_view.dart';
+import '../features/formpage/formpage_binding.dart';
+import '../features/formpage/formpage_view.dart';
 import '../features/splashScreen/splashpageView.dart';
 import '../features/splashScreen/splashpage_binding.dart';
 import 'routes_constant.dart';
@@ -33,9 +31,9 @@ List<GetPage> getPage = [
      transition: Transition.rightToLeft,
      ),
      GetPage( 
-    name: RoutesConstant.signuppage,
-     page: ()=> const SignUpPageView(),
-     binding: SignUpPageBinding(),
+    name: RoutesConstant.formPage,
+     page: ()=>  const FormPageView(),
+     binding: FormPageBinding(),
      transition: Transition.rightToLeft,
      ),
        GetPage( 
@@ -68,12 +66,7 @@ List<GetPage> getPage = [
      binding: SettingPageBinding(),
      transition: Transition.rightToLeft,
      ),
-        GetPage( 
-    name: RoutesConstant.formPage,
-     page: ()=> const FormPageView(),
-     binding: FormPageBinding(),
-     transition: Transition.rightToLeft,
-     ),
+   
 
     GetPage( 
      name: RoutesConstant.bookingpage,
@@ -95,9 +88,9 @@ List<GetPage> getPage = [
     ),
 
     GetPage( 
-    name: RoutesConstant.signuppage2,
-     page: ()=>  const SignUpPageView2(),
-     binding: SignUpPageBinding2(),
+    name: RoutesConstant.signuppage,
+     page: ()=>  const SignUpPageView(),
+     binding: SignUpPageBinding(),
      transition: Transition.rightToLeft,
      ),
 ];

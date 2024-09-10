@@ -1,105 +1,305 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/UIHelper/ui_helper.dart';
-import 'package:junofast_vendor/features/signuppage/signuppage_controller.dart';
 import 'package:junofast_vendor/routing/routes_constant.dart';
-
+import '../../UIHelper/ui_helper.dart';
+import 'signuppage_controller.dart';
 
 class SignUpPageView extends GetView<SignUpPageController> {
   const SignUpPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Get the screen size
-    var screenSize = MediaQuery.of(context).size;
-    
-    // Responsive padding and element sizing
-   // double horizontalPadding = screenSize.width * 0.05;
-    double imageWidth = screenSize.width * 0.5; // 50% of screen width
-    double buttonPadding = screenSize.width * 0.2; // 20% of screen width
-    
-    return Scaffold(
-      backgroundColor: Colors.orange,
-      body: SingleChildScrollView(
-        child: Form(
-          key: controller.signupKey,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20,),
-                SizedBox(
-                  width: imageWidth,
-                  child: Image.asset('assets/jf_logo.png'),
-                ),
-                const SizedBox(height: 40),
-                customTextField("User Name", 'Enter Name',TextInputType.name,Icons.person, controller.nameController),
-                customTextField("Email", 'Enter Email',TextInputType.name,Icons.email, controller.emailController),
-                customTextField("Mobile Number",'Mobile Number',TextInputType.number, Icons.phone, controller.phoneController),
-                customTextField("Password",'Password',TextInputType.text, Icons.lock, controller.passwordController),
-                customTextField("Confirm Password",'Confirm Password',TextInputType.text,Icons.lock,controller.cpasswordController),
-                const SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.checkValidation();
-                   // Get.toNamed(RoutesConstant.formPage);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    padding: EdgeInsets.symmetric(horizontal: buttonPadding, vertical: 15),
-                    textStyle: const TextStyle(fontSize: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.orange,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: const Center(child: Text('Attach Your Vehicle')),
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: controller.signupKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ignore: prefer_const_constructors
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                    child: const Text(
+                      'Are you a',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  child: const Text("Sign Up", style: TextStyle(color: Colors.white)),
-                ),
-                const SizedBox(height: 20), 
                   Padding(
-                            padding: const EdgeInsets.only(
-                                top: 15.0, left: 25, right: 25, bottom: 40),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                SizedBox(
-                                    width: 75,
-                                    height: 45,
-                                    child: InkWell(
-                                        onTap: () {
-                                         // controller.loginWithFacebook();
-                                        },
-                                       child: const Center(
-                                  child: Image(image: AssetImage('assets/google.png'),width: 30,),
-                                ))),
-                               
-                                 
-                                SizedBox(
-                                    width: 75,
-                                    height: 45,
-                                    child: InkWell(
-                                        onTap: () {
-                                        //  controller.loginWithPhone();
-                                        },
-                                        child:
-                                            const Center(child: Icon(Icons.phone,size: 32,)))),
-                              ],
-                            ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 19, vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Obx(
+                          () => Row(
+                            children: [
+                              Radio(
+                                value: 'Fleet Owner',
+                                groupValue: controller.role.value,
+                                onChanged: (value) {
+                                  controller.selectRole(value!);
+                                },
+                              ),
+                              const Text('Fleet Owner'),
+                            ],
                           ),
-                 Row(
+                        ),
+                        Obx(
+                          () => Row(
+                            children: [
+                              Radio(
+                                value: 'Packers & Movers',
+                                groupValue: controller.role.value,
+                                onChanged: (value) {
+                                  controller.selectRole(value!);
+                                },
+                              ),
+                              const Text('Packers & Movers'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  customTextField("User Name", 'Enter Name', TextInputType.name,
+                      Icons.person, controller.nameController),
+                  customTextField(
+                      "Email",
+                      'Enter Email',
+                      TextInputType.emailAddress,
+                      Icons.email,
+                      controller.emailController),
+                  customTextField(
+                      "Mobile Number",
+                      'Enter Mobile Number',
+                      TextInputType.phone,
+                      Icons.phone,
+                      controller.phoneController),
+                  customTextField("Firm", 'Enter Firm Name', TextInputType.text,
+                      Icons.business, controller.firmController),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                    child: Row(
+                      children: [
+                        Obx(
+                          () => Checkbox(
+                            value: controller.registerFirm.value,
+                            onChanged: (value) {
+                              controller.registerFirm.value = value!;
+                            },
+                          ),
+                        ),
+                        const Expanded(
+                          child: Text('  I don\'t have a registered firm'),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                    child: DropdownButtonFormField<String>(
+                      value: controller.typeOfVehicleRequired,
+                      items: const [
+                        DropdownMenuItem(value: "Truck", child: Text("Truck")),
+                        DropdownMenuItem(value: "Van", child: Text("Van")),
+                        DropdownMenuItem(value: "Car", child: Text("Car")),
+                      ],
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide
+                              .none, // Default border (when not focused)
+                        ),
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.8),
+                        label: const Text('Vehicles your own option'),
+                        hintStyle: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                        // Set the border when focused (e.g., rounded with a solid border)
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                            color: Colors
+                                .transparent, // Change the color to your desired focus color
+                            width: 2.0, // Change the thickness of the border
+                          ),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        controller.typeOfVehicleRequired = value;
+                      },
+                    ),
+                  ),
+
+                  customTextField(
+                      "Password",
+                      'Enter Password',
+                      TextInputType.text,
+                      Icons.lock,
+                      controller.passwordController),
+                  customTextField(
+                      "Address",
+                      'Enter Address',
+                      TextInputType.text,
+                      Icons.location_on,
+                      controller.addressController),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                    child: Text(
+                      'Can do packing if required?',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Obx(
+                          () => Row(
+                            children: [
+                              Radio(
+                                value: 'Yes',
+                                groupValue: controller.packing.value,
+                                onChanged: (value) {
+                                  controller.selectPacking(value!);
+                                },
+                              ),
+                              const Text('Yes'),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Obx(
+                          () => Row(
+                            children: [
+                              Radio(
+                                value: 'No',
+                                groupValue: controller.packing.value,
+                                onChanged: (value) {
+                                  controller.selectPacking(value!);
+                                },
+                              ),
+                              const Text('No'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  customTextField(
+                      "Confirm Password",
+                      'Enter Confirm Password',
+                      TextInputType.text,
+                      Icons.lock,
+                      controller.cpasswordController),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                    child: Row(
+                      children: [
+                        Obx(
+                          () => Checkbox(
+                            value: controller.termCondition.value,
+                            onChanged: (value) {
+                              controller.termCondition.value = value!;
+                            },
+                          ),
+                        ),
+                        const Expanded(
+                          child: Text(
+                              '  I accept and agree to the Terms and Conditions'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        controller.checkValidation();
+                        // Perform login action
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        fixedSize: Size(230, 55),
+                        textStyle: const TextStyle(fontSize: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: const Text("Sign Up",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 45.0, left: 55, right: 55, bottom: 40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              controller.loginWithGoogle();
+                            },
+                            child: const Center(
+                              child: Image(
+                                image: AssetImage('assets/google.png'),
+                                width: 40,
+                              ),
+                            )),
+                        InkWell(
+                            onTap: () {
+                              Get.toNamed(RoutesConstant.phoneAuth);
+                            },
+                            child: const Center(
+                                child: Icon(
+                              Icons.phone,
+                              size: 40,
+                            ))),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Allready have an account? ", style: TextStyle(fontSize: 16)),
+                      const Text("Don't have an account? ",
+                          style: TextStyle(fontSize: 16)),
                       GestureDetector(
                         onTap: () {
-                           Get.offAllNamed(RoutesConstant.loginpage);
+                          Get.offAllNamed(RoutesConstant.loginpage);
                           // Navigate to sign up page
                         },
-                        child: const Text("Login", style: TextStyle(fontSize: 16, color: Colors.blue)),
+                        child: const Text("Login",
+                            style: TextStyle(fontSize: 16, color: Colors.blue)),
                       ),
                     ],
-                  ), 
-                  const SizedBox(height: 20,),
-                   ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

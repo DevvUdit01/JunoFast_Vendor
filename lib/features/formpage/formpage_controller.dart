@@ -1,16 +1,16 @@
+
 import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/UIHelper/ui_helper.dart';
-import 'package:junofast_vendor/routing/routes_constant.dart';
 
 import '../../core/VendorModel/Vendor_model.dart';
 import '../../firebasServices/auth_services.dart';
+import '../../routing/routes_constant.dart';
 
-class SignUpPageController2 extends GetxController {
+class FormPageController extends GetxController {
 //   RxBool isSet = true.obs;
-  final signupKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   TextEditingController otpcontroller = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
@@ -46,9 +46,9 @@ class SignUpPageController2 extends GetxController {
   }
 
   void checkValidation() {
-    if (signupKey.currentState != null) {
+    if (formKey.currentState != null) {
       // Check if formKey.currentState is not null
-      if (signupKey.currentState!.validate()) {
+      if (formKey.currentState!.validate()) {
         // Proceed if the form is valid
         if (packing.isEmpty) {
           Get.snackbar('Required','check packing',backgroundColor: Colors.red);
@@ -98,15 +98,7 @@ class SignUpPageController2 extends GetxController {
     booking: [], // Empty booking list initially
   );
 
-    User? user = await AuthService.signUpWithEmailAndPassword(vendor);
-    if (user != null) {
-       Get.snackbar('Sign Up', 'User Create successfully ',backgroundColor: Color(0xFF12FD1A));
-        Get.offAllNamed(RoutesConstant.dashpage);
-    } else {
-      print('Sign up failed.');
-      Get.back();
-       Get.snackbar('Sign Up', 'Sign up failed. ',backgroundColor: Color(0xFFFD1212));
-    }
+    
   }
 
   String selectPacking(String selectedPaking) {

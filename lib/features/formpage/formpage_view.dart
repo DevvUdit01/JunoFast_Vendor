@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/routing/routes_constant.dart';
 import '../../UIHelper/ui_helper.dart';
-import 'signuppage2_controller.dart';
+import '../../routing/routes_constant.dart';
+import 'formpage_controller.dart';
 
-class SignUpPageView2 extends GetView<SignUpPageController2> {
-  const SignUpPageView2({super.key});
+class FormPageView extends GetView<FormPageController> {
+  const FormPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class SignUpPageView2 extends GetView<SignUpPageController2> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
-              key: controller.signupKey,
+              key: controller.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -239,7 +239,7 @@ class SignUpPageView2 extends GetView<SignUpPageController2> {
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        controller.checkValidation();
+                       // controller.checkValidation();
                         // Perform login action
                       },
                       style: ElevatedButton.styleFrom(
@@ -250,39 +250,11 @@ class SignUpPageView2 extends GetView<SignUpPageController2> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      child: const Text("Sign Up",
+                      child: const Text("Submit",
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 45.0, left: 55, right: 55, bottom: 40),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                            onTap: () {
-                              controller.loginWithGoogle();
-                            },
-                            child: const Center(
-                              child: Image(
-                                image: AssetImage('assets/google.png'),
-                                width: 40,
-                              ),
-                            )),
-                        InkWell(
-                            onTap: () {
-                              Get.toNamed(RoutesConstant.phoneAuth);
-                              // controller.loginWithPhone();
-                            },
-                            child: const Center(
-                                child: Icon(
-                              Icons.phone,
-                              size: 40,
-                            ))),
-                      ],
-                    ),
-                  ),
+                  
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

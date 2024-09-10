@@ -22,49 +22,66 @@ class LoginPageView extends GetView<LoginPageController> {
       body: SingleChildScrollView(
         child: Center(
           child: Form(
-            key: controller.loginKey,
+            key: controller.loginKey, // Ensure this key is not reused elsewhere
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: screenSize.height*0.1,),
+                  SizedBox(height: screenSize.height * 0.1),
                   SizedBox(
                     width: screenSize.width * 0.8,
                     child: Image.asset('assets/jf_logo.png'),
                   ),
                   const SizedBox(height: 20),
-                  customTextField("Email", 'Enter Email',TextInputType.emailAddress,Icons.email, controller.emailController),
-                  customTextField("Password", 'Enter password',TextInputType.text,Icons.lock, controller.passWordController),
+                  // Custom Email Field
+                  customTextField(
+                    "Email",
+                    'Enter Email',
+                    TextInputType.emailAddress,
+                    Icons.email,
+                    controller.emailController,
+                  ),
+                  // Custom Password Field
+                  customTextField(
+                    "Password",
+                    'Enter password',
+                    TextInputType.text,
+                    Icons.lock,
+                    controller.passWordController,
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                            onPressed: () {
-                              Get.toNamed(RoutesConstant.forgotPassword);
-                            }, child: const Text('Forgot password?')),
+                          onPressed: () {
+                            Get.toNamed(RoutesConstant.forgotPassword);
+                          },
+                          child: const Text('Forgot password?'),
+                        ),
                       ],
                     ),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                     controller.checkValidation();
-                      // Perform login action
+                      controller.checkValidation();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
-                      fixedSize: Size(230, 55),
+                      fixedSize: const Size(230, 55),
                       padding: EdgeInsets.symmetric(
-                      horizontal: buttonPadding, vertical: 15),
+                          horizontal: buttonPadding, vertical: 15),
                       textStyle: const TextStyle(fontSize: 18),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    child:
-                        const Text("Login", style: TextStyle(color: Colors.white)),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -73,22 +90,27 @@ class LoginPageView extends GetView<LoginPageController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                            onTap: () {
-                                controller.loginWithGoogle();
-                            },
-                            child: const Center(
-                              child: Image(image: AssetImage('assets/google.png'),width: 40,),
-                              )),
+                          onTap: () {
+                            controller.loginWithGoogle();
+                          },
+                          child: const Center(
+                            child: Image(
+                              image: AssetImage('assets/google.png'),
+                              width: 40,
+                            ),
+                          ),
+                        ),
                         InkWell(
-                            onTap: () {
-                              Get.toNamed(RoutesConstant.phoneAuth);
-                              // controller.loginWithPhone();
-                            },
-                            child: const Center(
-                                child: Icon(
+                          onTap: () {
+                            Get.toNamed(RoutesConstant.phoneAuth);
+                          },
+                          child: const Center(
+                            child: Icon(
                               Icons.phone,
                               size: 40,
-                            ))),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -96,15 +118,18 @@ class LoginPageView extends GetView<LoginPageController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Don't have an account? ",
-                          style: TextStyle(fontSize: 16)),
+                      const Text(
+                        "Don't have an account? ",
+                        style: TextStyle(fontSize: 16),
+                      ),
                       GestureDetector(
                         onTap: () {
-                          Get.toNamed(RoutesConstant.signuppage2);
-                          // Navigate to sign up page
+                          Get.toNamed(RoutesConstant.signuppage);
                         },
-                        child: const Text("Sign Up",
-                            style: TextStyle(fontSize: 16, color: Colors.blue)),
+                        child: const Text(
+                          "Sign Up",
+                          style: TextStyle(fontSize: 16, color: Colors.blue),
+                        ),
                       ),
                     ],
                   ),
