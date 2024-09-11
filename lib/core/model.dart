@@ -104,11 +104,13 @@ class Booking {
 
   factory Booking.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    print('line no 107');
+    print( data['pickupLocation']);
 
     return Booking(
       id: doc.id,
-      pickupLocation: data['pickup_Location'] as String? ?? '',
-      dropLocation: data['drop_Location'] as String? ?? '',
+      pickupLocation: data['pickupLocation'] as String? ?? 'null',
+      dropLocation: data['dropLocation'] as String? ?? 'null',
       vehicleType: data['vehicleType'] as String? ?? '',
       status: data['status'] as String? ?? 'pending',
       amount: data['amount'] != null ? (data['amount'] as num).toDouble() : 0.0,
@@ -129,8 +131,8 @@ class Booking {
 
   Map<String, dynamic> toMap() {
     return {
-      'pickup_location': pickupLocation,
-      'drop_location': dropLocation,
+      'pickupLocation': pickupLocation,
+      'dropLocation': dropLocation,
       'vehicleType': vehicleType,
       'status': status,
       'amount': amount,

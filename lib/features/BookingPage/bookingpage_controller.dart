@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../core/model.dart';
 
 class BookingPageController extends GetxController {
+  TextEditingController dateController =TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String vendorId = "UDtTGLIHgdTQQFtTwXow"; // Replace with actual vendor ID or fetch dynamically
 
@@ -52,8 +53,6 @@ class BookingPageController extends GetxController {
 
 void updateLead(BuildContext context, Booking booking) {
   final amountController = TextEditingController(text: booking.amount.toString());
-  final timeController = TextEditingController();
-  DateTime? selectedDate;
 
   showDialog(
     context: context,
@@ -66,26 +65,39 @@ void updateLead(BuildContext context, Booking booking) {
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Amount'),
+              decoration: InputDecoration(
+                    labelText: 'Amount',
+                    border: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.all(Radius.elliptical(12, 12)),
+                    ),
+                    fillColor: Colors.grey.shade100,
+                    filled: true),
             ),
-            TextField(
-              controller: timeController,
-              keyboardType: TextInputType.datetime,
-              decoration: InputDecoration(labelText: 'Schedule Time (e.g., 14:00)'),
-            ),
-            SizedBox(height: 10),
-            Text('Select Pickup Date'),
-            SizedBox(height: 5),
-            ElevatedButton(
-              onPressed: () async {
-                selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2101),
-                );
-              },
-              child: Text('Choose Date'),
+            SizedBox(height: 8,),
+             Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                onTap: () {
+                  showCalender();
+                },
+                controller: dateController,
+                decoration: InputDecoration(
+                    labelText: 'Select Pickup Date',
+                    border: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.all(Radius.elliptical(12, 12)),
+                    ),
+                    fillColor: Colors.grey.shade100,
+                    filled: true),
+                keyboardType: TextInputType.none,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please Enter Pickup Date';
+                  }
+                  return null;
+                },
+              ),
             ),
           ],
         ),
@@ -97,16 +109,14 @@ void updateLead(BuildContext context, Booking booking) {
           TextButton(
             onPressed: () async {
               final amount = double.tryParse(amountController.text);
-              final scheduleTime = timeController.text;
 
-              if (amount != null && scheduleTime.isNotEmpty && selectedDate != null) {
-                final formattedDate = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
+              if (amount != null  && dateController != '') {
+                //final formattedDate = "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
 
                 // Update the booking with the new amount, schedule time, and pickup date
                 await _firestore.collection('bookings').doc(booking.id).update({
                   'amount': amount,
-                  'scheduleTime': scheduleTime,
-                  'pickupDate': formattedDate,
+                  'pickupDate': dateController,
                   'status': 'ongoing',
                 });
 
@@ -192,4 +202,20 @@ Future<void> updateTotalAmountInPayment(String bookingId, double updatedAmount) 
       },
 );
 }
+
+ void showCalender() async {
+    DateTime? userSelectDate = await showDatePicker(
+      context: Get.overlayContext!,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(DateTime.now().year + 2),
+    );
+    if (userSelectDate != null) {
+      dateController.text =
+          "${userSelectDate.year}-${userSelectDate.month}-${userSelectDate.day}";
+    } else {
+      print('date not selected');
+    }
+  }
+
 }

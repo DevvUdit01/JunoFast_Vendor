@@ -128,9 +128,16 @@ class BookingPageView extends StatelessWidget {
                             fontSize: 18.0,
                           ),
                         ),
-                        subtitle: Text('Status: ${booking.status}',
-                            style: const TextStyle(
-                                fontSize: 16.0, color: Colors.black)),
+                        subtitle: Row(
+                          children: [
+                            const Text('Status : ',
+                                style: TextStyle(
+                                    fontSize: 16.0, color: Colors.black)),
+                                    Text(booking.status,
+                                style: const TextStyle(
+                                    fontSize: 18.0, color: Colors.green)),
+                          ],
+                        ),
                         onTap: () =>
                             _showBookingDetailsDialog(context, booking),
                       ),
