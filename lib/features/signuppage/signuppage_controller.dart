@@ -6,12 +6,10 @@ import '../../firebasServices/auth_services.dart';
 class SignUpPageController extends GetxController {
 //   RxBool isSet = true.obs;
   final signupKey = GlobalKey<FormState>();
-  TextEditingController otpcontroller = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
   TextEditingController cpasswordController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController firmController = TextEditingController();

@@ -88,7 +88,7 @@ class SignUpPageView extends GetView<SignUpPageController> {
                         'Enter Mobile Number',
                         TextInputType.phone,
                         Icons.phone,
-                        controller.phoneController),
+                        controller.mobileController),
                     customTextField("Firm", 'Enter Firm Name', TextInputType.text,
                         Icons.business, controller.firmController),
                     Padding(
