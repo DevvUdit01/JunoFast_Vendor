@@ -91,27 +91,26 @@ class FormPageView extends GetView<FormPageController> {
                         ],
                       ),
                     ),
-                    customTextField("User Name", 'Enter Name', TextInputType.name,
-                        Icons.person, controller.nameController),
-                    controller.isGoogleLoging ? customTextFieldNoFilled(
+                    customTextField("User Name", 'Enter Name', TextInputType.name,Icons.person, controller.nameController),
+                    controller.isGoogleLoging ? customTextField(
                         "Email",
                         'Enter Email',
                         TextInputType.emailAddress,
                         Icons.email,
                         controller.emailController)
-                    :customTextField(
+                    :customTextFieldNoFilled(
                         "Email",
                         'Enter Email',
                         TextInputType.emailAddress,
                         Icons.email,
                         controller.emailController),
-                      controller.isGoogleLoging ? customTextField(
+                      controller.isGoogleLoging ? customTextFieldNoFilled(
                         "Mobile Number",
                         'Enter Mobile Number',
                         TextInputType.phone,
                         Icons.phone,
                         controller.phoneController)
-                        : customTextFieldNoFilled(
+                        : customTextField(
                         "Mobile Number",
                         'Enter Mobile Number',
                         TextInputType.phone,
