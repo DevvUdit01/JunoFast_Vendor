@@ -1,21 +1,30 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/routing/routes_constant.dart';
 import '../../UIHelper/ui_helper.dart';
+import '../../core/VendorModel/Vendor_model.dart';
+import '../../firebasServices/auth_services.dart';
+import '../../routing/routes_constant.dart';
+import '../formpage/formpage_view.dart';
 
 class PhoneAuthenticationController extends GetxController {
   TextEditingController phoneController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   GlobalKey<FormState> phoneKey = GlobalKey();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   late String _verificationId;
   RxBool isCodeSent = false.obs;
   RxBool isLoading = false.obs;
   RxInt remainingTime = 60.obs;
   Timer? timer;
-  RxBool isResendEnabled = false.obs; // Flag for resend OTP
-  
+  RxBool isResendEnabled = false.obs;
+  late bool isSignUp;
+
   @override
   void onClose() {
     phoneController.dispose();
@@ -24,27 +33,42 @@ class PhoneAuthenticationController extends GetxController {
     super.onClose();
   }
 
+  // Validate phone number and send OTP
   void checkValidate() {
     if (phoneKey.currentState!.validate()) {
-      verifyNumber();
+      fetchPhoneNumberAndSendOtp();
     }
   }
 
-  Future<void> verifyNumber() async {
-    // Validate phone number format before proceeding
-    if (!validatePhoneNumber(phoneController.text)) {
-      Get.snackbar('Error', 'Invalid phone number format');
-      return;
-    }
+  // Fetch phone number from Firestore and send OTP
+  Future<void> fetchPhoneNumberAndSendOtp() async {
+    final phoneNumber = "+91${phoneController.text.trim()}";
+    final vendorDoc = await _firestore.collection('vendors')
+        .where('mobileNumber', isEqualTo: phoneNumber)
+        .get();
 
-    isLoading.value = true;
+    if (isSignUp && vendorDoc.docs.isNotEmpty) {
+      print('line no 51 signup');
+      Get.snackbar("Error", "This mobile number already exists", backgroundColor: Colors.red);
+    } else if (!isSignUp && vendorDoc.docs.isEmpty) {
+      print('line no 55 sign in');
+      Get.snackbar("Error", "This mobile number does not exist", backgroundColor: Colors.red);
+    } else {
+      print('line no 57');
+      print(isSignUp);
+      isLoading.value = true;
+      sendOTP(phoneNumber);
+    }
+  }
+
+  // Send OTP
+  Future<void> sendOTP(String phoneNumber) async {
     try {
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: "+91${phoneController.text.trim()}",
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          await FirebaseAuth.instance.signInWithCredential(credential);
+          await _auth.signInWithCredential(credential);
           isLoading.value = false;
-          Get.offAllNamed(RoutesConstant.dashpage);
         },
         verificationFailed: (FirebaseAuthException ex) {
           isLoading.value = false;
@@ -55,127 +79,123 @@ class PhoneAuthenticationController extends GetxController {
           isCodeSent.value = true;
           isLoading.value = false;
           startTimer();
-          print("Code sent to ${phoneController.text}");
+          Get.snackbar("Info", "OTP sent to $phoneNumber", backgroundColor: Colors.green);
         },
         timeout: const Duration(seconds: 60),
         codeAutoRetrievalTimeout: (String verificationId) {
           _verificationId = verificationId;
-          print("Auto retrieval timeout");
-          isResendEnabled.value = true; // Enable resend after timeout
+          isResendEnabled.value = true;
         },
       );
     } catch (e) {
       isLoading.value = false;
       Get.snackbar("Error", "An internal error occurred. Please try again.");
-      print("Exception: $e");
     }
   }
 
-  Future<void> verifyOtp() async {
+  // Verify OTP for both sign-in and sign-up
+  Future<void> verifyOtp({required bool isSignUp}) async {
     if (otpController.text.isEmpty || otpController.text.length != 6) {
-      Get.snackbar("Error", "Please enter a valid OTP");
+      Get.snackbar("Error", "Please enter a valid OTP", backgroundColor: Colors.red);
       return;
     }
-    customDialog();
+
+    isLoading.value = true;
     try {
-      isLoading.value = true;
       final credential = PhoneAuthProvider.credential(
         verificationId: _verificationId,
         smsCode: otpController.text.trim(),
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      isLoading.value = false;
-      Get.back(); // Close dialog
-      showDoneStatus();
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        if (isSignUp) {
+          await handleSignUp(user);
+        } else {
+          handleSignIn();
+        }
+      } else {
+        isLoading.value = false;
+        Get.snackbar("Error", "User verification failed", backgroundColor: Colors.red);
+      }
     } on FirebaseAuthException catch (e) {
       isLoading.value = false;
-      Get.back();
-      handleAuthError(e);
-    } catch (e) {
-      isLoading.value = false;
-      Get.back();
-      Get.snackbar("Error", "An internal error occurred. Please try again.");
-      print("Exception: $e");
+      Get.snackbar("Error", e.message ?? "Unknown Firebase error");
     }
   }
 
+  // Handle sign-up logic
+  Future<void> handleSignUp(User user) async {
+    isLoading.value = false;
+    final VendorModel? newVendor = await Get.off<VendorModel>(
+      FormPageView(),
+      arguments: {'phoneNumber': user.phoneNumber},
+    );
+
+    if (newVendor != null) {
+      customDialog();
+      await _firestore.collection('vendors').doc(user.uid).set(newVendor.toMap());
+      Get.back();
+      Get.snackbar("Success", "User account created successfully", backgroundColor: Colors.green);
+      AuthService.setLoginValue(true);
+      Get.offAllNamed(RoutesConstant.dashpage);
+    } else {
+      Get.snackbar("Error", "User creation canceled", backgroundColor: Colors.red);
+    }
+  }
+
+  // Handle sign-in logic
+  void handleSignIn() {
+    isLoading.value = false;
+    Get.snackbar("Success", "User Login successfully", backgroundColor: Colors.green);
+    AuthService.setLoginValue(true);
+    Get.offAllNamed(RoutesConstant.dashpage);
+  }
+
+  // Handle authentication errors
   void handleAuthError(FirebaseAuthException ex) {
     isLoading.value = false;
+    String message;
     switch (ex.code) {
       case 'invalid-phone-number':
-        Get.snackbar("Error", "Invalid phone number.");
+        message = "Invalid phone number.";
         break;
       case 'too-many-requests':
-        Get.snackbar("Error", "Too many requests. Please try again later.");
+        message = "Too many requests. Please try again later.";
         break;
       case 'invalid-verification-code':
-        Get.snackbar("Error", "Invalid OTP. Please try again.");
+        message = "Invalid OTP. Please try again.";
         break;
-      case 'internal-error': // Handle internal error explicitly
-        Get.snackbar("Verification Failed", "An internal error occurred. Please try again.");
+      default:
+        message = ex.message ?? "An unknown error occurred.";
         break;
-      default:{
-        print("Verification Failed : ${ex.message.toString()}");
-        Get.snackbar("Verification Failed", ex.message ?? "Unknown error");
-        break;
-      }
     }
-    print("FirebaseAuthException: ${ex.code.toString()}");
+    Get.snackbar("Error", message);
   }
 
+  // Start timer for resend OTP option
   void startTimer() {
-    remainingTime.value = 60; // Reset the timer
-    isResendEnabled.value = false; // Disable resend initially
-    timer?.cancel(); // Cancel any previous timers
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    remainingTime.value = 60;
+    isResendEnabled.value = false;
+    timer?.cancel();
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime.value > 0) {
         remainingTime.value--;
       } else {
         timer.cancel();
-        isResendEnabled.value = true; // Enable resend OTP option after timer ends
+        isResendEnabled.value = true;
       }
     });
   }
 
-  // Function to resend OTP
+  // Resend OTP if enabled
   void resendOtp() {
     if (isResendEnabled.value) {
-      verifyNumber(); // Resend OTP
+      fetchPhoneNumberAndSendOtp();
     } else {
       Get.snackbar("Info", "Please wait until the timer ends.");
     }
-  }
-
-  void showDoneStatus() {
-    Get.defaultDialog(
-      barrierDismissible: false,
-      title: 'Success',
-      content: Column(
-        children: [
-          Image.asset('assets/successful.png', height: 100),
-          const Text('OTP Verified Successfully!', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
-        ],
-      ),
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            Get.back();
-            Get.offAllNamed(RoutesConstant.dashpage);
-            Get.snackbar('Registration', 'User created successfully', backgroundColor: const Color(0xFF16F01E));
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.purple,
-          ),
-          child: const Text('Ok', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
-        ),
-      ],
-    );
-  }
-
-  // Phone number validation
-  bool validatePhoneNumber(String phoneNumber) {
-    final regex = RegExp(r'^[6-9]\d{9}$'); // Valid for Indian phone numbers
-    return regex.hasMatch(phoneNumber);
   }
 }

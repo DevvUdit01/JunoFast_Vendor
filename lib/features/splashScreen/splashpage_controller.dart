@@ -1,37 +1,29 @@
-
-//import 'dart:async';
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:junofast_vendor/core/globals.dart'as gbl;
+import 'package:junofast_vendor/firebasServices/auth_services.dart';
 import 'package:junofast_vendor/routing/routes_constant.dart';
-//import 'package:uber_udit/routes/Routing/route_constant.dart';
+
 
 class SplashScreenController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-      Timer(const Duration(seconds: 6), () {
-        Get.offAllNamed(
-        (FirebaseAuth.instance.currentUser != null) ? RoutesConstant.dashpage:RoutesConstant.loginpage,);
-    });
-
-   // chekLoginStatus();
-  // FirebaseFireStoreService.fetchUserDocument();
+    chekLoginStatus();
   }
 
- // void chekLoginStatus(){
+  void chekLoginStatus(){
   // get login value
-  //  FirebaseAuthService.getLoginValue();
-  // // splash screeen timer
-  //   Timer(const Duration(seconds: 3), () {
-  //     if (gbl.isLogin.value == true) {         
-  //       Get.offAllNamed(RouteConstant.deshpage);
-  //       FirebaseAuthService.getPfofile();
-  //     } else {
-  //       Get.offAllNamed(RouteConstant.loginpage);
-  //     }
-  //   });
- // }
+   AuthService.getLoginValue();
+  // splash screeen timer
+    Timer(const Duration(seconds: 3), () {
+      if (gbl.isLogin.value == true) {         
+        Get.offAllNamed(RoutesConstant.dashpage);
+       // FirebaseAuthService.getPfofile();
+      } else {
+        Get.offAllNamed(RoutesConstant.loginpage);
+      }
+    });
+  }
 
 }
- 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:pinput/pinput.dart';
 import 'phone_auth_controller.dart';
 
@@ -9,10 +8,11 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.isSignUp = Get.arguments;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.orangeAccent,  // Lightened background color
+        backgroundColor: Colors.orangeAccent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -23,7 +23,7 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
           children: [
             Align(
               alignment: Alignment.center,
-              child: SingleChildScrollView( // Make scrollable in case of smaller devices
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -32,9 +32,10 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                       'Enter your mobile number to receive an OTP',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontSize: 17.5,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black.withOpacity(0.8)),
+                        fontSize: 17.5,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.8),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     Form(
@@ -90,18 +91,20 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                                 Text(
                                   'Enter the OTP sent to your number:',
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black.withOpacity(0.6)),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black.withOpacity(0.6),
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10, bottom: 15),
                                   child: Text(
                                     "+91 ${controller.phoneController.text}",
                                     style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black.withOpacity(0.6)),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black.withOpacity(0.6),
+                                    ),
                                   ),
                                 ),
                                 Pinput(
@@ -111,8 +114,7 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                                     width: 56,
                                     height: 56,
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: const Color.fromRGBO(234, 239, 243, 1)),
+                                      border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
                                       borderRadius: BorderRadius.circular(10),
                                       color: Colors.white.withOpacity(0.8),
                                     ),
@@ -120,38 +122,29 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                                   ),
                                 ),
                                 const SizedBox(height: 15),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Remaining Time: ',
-                                      style: TextStyle(fontSize: 18, color: Colors.red),
-                                    ),
-                                    Obx(
-                                      () => Text(
-                                        '${controller.remainingTime.value}s',
-                                        style: const TextStyle(fontSize: 18, color: Colors.red),
-                                      ),
-                                    ),
-                                  ],
+                                Obx(
+                                  () => Text(
+                                    'Remaining Time: ${controller.remainingTime.value}s',
+                                    style: const TextStyle(fontSize: 18, color: Colors.red),
+                                  ),
                                 ),
                                 Obx(
                                   () => controller.remainingTime.value == 0
                                       ? TextButton(
                                           onPressed: controller.resendOtp,
-                                          child: const Text('Resend OTP'),
                                           style: TextButton.styleFrom(
                                             backgroundColor: Colors.blueAccent,
                                             textStyle: const TextStyle(fontSize: 16),
                                           ),
+                                          child: const Text('Resend OTP'),
                                         )
-                                      : Container(),
+                                      : const SizedBox.shrink(),
                                 ),
                                 const SizedBox(height: 15),
                                 ElevatedButton(
                                   onPressed: () {
                                     FocusScope.of(context).unfocus();
-                                    controller.verifyOtp();
+                                    controller.verifyOtp(isSignUp: controller.isSignUp);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.purple,
@@ -161,23 +154,26 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                                     child: Text(
                                       'Verify OTP',
                                       style: TextStyle(
-                                          color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             )
-                          : Container(),
+                          : const SizedBox.shrink(),
                     ),
                   ],
                 ),
               ),
             ),
-            Obx(() => controller.isLoading.value
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Container()),
+            Obx(
+              () => controller.isLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : const SizedBox.shrink(),
+            ),
           ],
         ),
       ),

@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Lead {
   final String id;
-  final GeoPoint pickupLocation;
-  final GeoPoint dropLocation;
+  final String pickupLocation;
+  final String dropLocation;
   final String vehicleType;
   final String status;
   final double amount;
@@ -33,8 +33,8 @@ class Lead {
     final data = doc.data() as Map<String, dynamic>;
     return Lead(
       id: doc.id,
-      pickupLocation: data['pickup_location'] as GeoPoint? ?? GeoPoint(0, 0),
-      dropLocation: data['drop_location'] as GeoPoint? ?? GeoPoint(0, 0),
+      pickupLocation: data['pickup_location'] as String? ?? '',
+      dropLocation: data['drop_location'] as String? ?? '',
       vehicleType: data['vehicleType'] as String? ?? '',
       status: data['status'] as String? ?? 'pending',
       amount: data['amount'] != null ? (data['amount'] as num).toDouble() : 0.0,
@@ -67,8 +67,8 @@ class Lead {
 
 class Booking {
   final String id;
-  final GeoPoint pickupLocation;
-  final GeoPoint dropLocation;
+  final String pickupLocation;
+  final String dropLocation;
   final String vehicleType;
   final String status;
   final double amount;
@@ -107,8 +107,8 @@ class Booking {
 
     return Booking(
       id: doc.id,
-      pickupLocation: data['pickupLocation'] as GeoPoint? ?? GeoPoint(0, 0),
-      dropLocation: data['dropLocation'] as GeoPoint? ?? GeoPoint(0, 0),
+      pickupLocation: data['pickup_Location'] as String? ?? '',
+      dropLocation: data['drop_Location'] as String? ?? '',
       vehicleType: data['vehicleType'] as String? ?? '',
       status: data['status'] as String? ?? 'pending',
       amount: data['amount'] != null ? (data['amount'] as num).toDouble() : 0.0,

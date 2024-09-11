@@ -1,8 +1,5 @@
-import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/routing/routes_constant.dart';
-
 import '../../core/VendorModel/Vendor_model.dart';
 import '../../firebasServices/auth_services.dart';
 
@@ -22,25 +19,11 @@ class SignUpPageController extends GetxController {
   var role = ''.obs;
   var termCondition = false.obs;
   var registerFirm = false.obs;
-  late EmailAuth emailAuth;
   String? typeOfVehicleRequired;
-
-  var remoteServerConfiguration = {
-    "server":"https://mail-about.herokuapp.com",
-    "serverkey":"defkey",
-  };
 
   @override
   void onInit() {
     super.onInit();
-    // Initialize the package
-    emailAuth = new EmailAuth(
-      sessionName: "Sample session",
-    );
-
-    /// Configuring the remote server
-      emailAuth.config(remoteServerConfiguration);
-    
   }
 
   void checkValidation() {
@@ -123,37 +106,6 @@ class SignUpPageController extends GetxController {
       return role.value;
     }
   }
-
-  void verify() {
-    var res = emailAuth.validateOtp(
-        recipientMail: emailController.value.text,
-        userOtp: otpcontroller.value.text);
-    if (res) {
-      print('OTP Verified');
-    } else {
-      print('Invalid OTP');
-    }
-  }
-
- void sendOtp() async {
-  try {
-    bool res = await emailAuth.sendOtp(
-      recipientMail: emailController.text,
-      otpLength: 5,
-    );
-    if (res) {
-      print("OTP sent");
-      Get.snackbar('OTP Sent', 'OTP has been sent to your email.');
-      Get.toNamed(RoutesConstant.verifyEmailOTP);
-    } else {
-      print('Failed to send OTP');
-      Get.snackbar('Error', 'Failed to send OTP. Invalid email or server issue.');
-    }
-  } catch (e) {
-    print('Error sending OTP: $e');
-    Get.snackbar('Error', 'An error occurred while sending OTP.');
-  }
-}
 
   void loginWithGoogle() async{
     print('signUp wiht google call');

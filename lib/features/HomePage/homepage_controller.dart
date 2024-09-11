@@ -90,26 +90,35 @@ class HomePageController extends GetxController {
     // Extract the leadId from the notification data
     String? leadId = message.data['leadId'];
   
-    if (leadId != null && leadId.isNotEmpty) {
-      print('Navigating to Lead ID: $leadId');
+    // if (leadId != null && leadId.isNotEmpty) {
+    //   print('Navigating to Lead ID: $leadId');
       
-      // Perform navigation to the lead details page
-      Get.toNamed('/lead-details', arguments: leadId);
-    } else {
-      print('Error: leadId is null or empty');
-      Get.snackbar('Error', 'Invalid lead ID', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-    }
+    //   // Perform navigation to the lead details page
+    //   Get.toNamed('/lead-details', arguments: leadId);
+    // } else {
+    //   print('Error: leadId is null or empty');
+    //   Get.snackbar('Error', 'Invalid lead ID', snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    // }
   }
 
-  void fetchAndListenForLeads() {
-    print('Fetching and listening for leads for vendor ID: $vendorId');
-    _firestore.collection('leads').where('notifiedVendors', arrayContains: vendorId).snapshots().listen((querySnapshot) {
-      print('Number of leads fetched: ${querySnapshot.docs.length}');
-      leads.value = querySnapshot.docs.map((doc) => Lead.fromDocument(doc)).toList();
+void fetchAndListenForLeads() {
+  print('Fetching and listening for leads for vendor ID: $vendorId');
+  
+  _firestore.collection('leads')
+    .where('notifiedVendors', arrayContains: vendorId)
+    .snapshots()
+    .listen((querySnapshot) {
+      if (querySnapshot.docs.isEmpty) {
+        print('No leads found for vendor ID: $vendorId');
+      } else {
+        print('Number of leads fetched: ${querySnapshot.docs.length}');
+        leads.value = querySnapshot.docs.map((doc) => Lead.fromDocument(doc)).toList();
+      }
     }, onError: (error) {
       print('Error fetching leads: $error');
     });
-  }
+}
+
 
   Future<void> acceptLead(String leadId) async {
     // Show a dialog for transportation details

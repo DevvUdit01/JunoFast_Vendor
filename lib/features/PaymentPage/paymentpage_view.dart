@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'paymentpage_controller.dart';
@@ -20,10 +19,9 @@ class PaymentPageView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment Details',
-        style: TextStyle(
-          color: Colors.white
-        ),
+        title: Text(
+          'Payment Details',
+          style: TextStyle(color: Colors.white),
         ),
         backgroundColor: secondaryColor,
       ),
@@ -47,10 +45,10 @@ class PaymentPageView extends StatelessWidget {
             // Get payment details for the current item
             Map<String, dynamic> payment = paymentController.payments[index];
 
-            // Extract payment details
+            // Extract payment details, using default values if null
             String bookingId = payment['bookingId'];
-            int totalAmount = payment['totalAmount'].toInt() ;
-            int amountReceived =payment['amountReceived'].toInt() ?? 0.0;
+            int totalAmount = payment['totalAmount'].toInt();
+            int amountReceived = (payment['amountReceived'] ?? 0).toInt();
 
             return Card(
               margin: EdgeInsets.all(16.0),

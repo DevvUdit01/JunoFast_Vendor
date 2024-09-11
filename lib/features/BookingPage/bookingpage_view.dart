@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geocoding/geocoding.dart';
-
 import '../../core/model.dart';
 import 'bookingpage_controller.dart';
 
@@ -151,8 +148,8 @@ class BookingPageView extends StatelessWidget {
   Future<void> _showBookingDetailsDialog(
       BuildContext context, Booking booking) async {
     // Convert GeoPoint to real addresses
-    String pickupAddress = await _getAddressFromGeoPoint(booking.pickupLocation);
-    String dropAddress = await _getAddressFromGeoPoint(booking.dropLocation);
+    // String pickupAddress = await _getAddressFromGeoPoint(booking.pickupLocation);
+    // String dropAddress = await _getAddressFromGeoPoint(booking.dropLocation);
 
     showDialog(
       context: context,
@@ -174,8 +171,8 @@ class BookingPageView extends StatelessWidget {
                 Text('Client Name: ${booking.clientName}'),
                 Text('Client Number: ${booking.clientNumber}'),
                 Text('Vehicle Type: ${booking.vehicleType}'),
-                Text('Pickup Location: $pickupAddress'),
-                Text('Drop Location: $dropAddress'),
+                Text('Pickup Location: ${booking.pickupLocation}'),
+                Text('Drop Location: ${booking.dropLocation}'),
                 Text('Pickup Date: ${booking.pickupDate}'),
                 Text('Amount: ${booking.amount}'),
                 Text('Status: ${booking.status}'),
@@ -198,21 +195,5 @@ class BookingPageView extends StatelessWidget {
         );
       },
     );
-  }
-
-  Future<String> _getAddressFromGeoPoint(GeoPoint geoPoint) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        geoPoint.latitude,
-        geoPoint.longitude,
-      );
-      if (placemarks.isNotEmpty) {
-        final placemark = placemarks.first;
-        return "${placemark.street}, ${placemark.locality}, ${placemark.postalCode}, ${placemark.country}";
-      }
-    } catch (e) {
-      print('Error getting address: $e');
-    }
-    return 'Address not available';
   }
 }
