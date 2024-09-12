@@ -16,7 +16,7 @@ class SignUpPageView extends GetView<SignUpPageController> {
           backgroundColor: Colors.orange,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
-            title: const Center(child: Text('Attach Your Vehicle')),
+            title: const Center(child: Text('fill your all details')),
           ),
           body: SingleChildScrollView(
             child: Padding(

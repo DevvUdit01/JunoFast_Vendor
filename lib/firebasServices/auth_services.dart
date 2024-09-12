@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/core/globals.dart'as gbl;
+import 'package:junofast_vendor/core/globals.dart' as gbl;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:junofast_vendor/UIHelper/ui_helper.dart';
 import 'package:junofast_vendor/features/formpage/formpage_view.dart';
@@ -17,7 +17,6 @@ class AuthService {
   // Sign up with email and password
   static Future<void> signUpWithEmailAndPassword(VendorModel vendor) async {
     try {
-      // Show a loading dialog
       customDialog();
 
       // Check if email or mobile number is already in Firestore
@@ -36,7 +35,7 @@ class AuthService {
         Get.snackbar(
           'Error',
           'The email address is already in use by another account.',
-          backgroundColor: Color(0xFFFD1212),
+          backgroundColor: const Color(0xFFFD1212),
           snackPosition: SnackPosition.BOTTOM,
         );
         return;
@@ -47,40 +46,40 @@ class AuthService {
         Get.snackbar(
           'Error',
           'The mobile number is already in use by another account.',
-          backgroundColor: Color(0xFFFD1212),
+          backgroundColor: const Color(0xFFFD1212),
           snackPosition: SnackPosition.BOTTOM,
         );
         return;
       }
 
-      // If both email and mobile are not already in use, proceed to create a new user
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+      // Create user
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: vendor.email,
         password: vendor.password,
       );
 
       if (userCredential.user != null) {
-        // Save vendor details to Firestore
-        await _firestore
-            .collection('vendors')
-            .doc(userCredential.user!.uid)
-            .set(vendor.toMap());
+        User? user = userCredential.user;
+        
+        // Send email verification
+        await user!.sendEmailVerification();
 
+        // Save vendor details to Firestore after email verification
+                      await _firestore.collection('vendors').doc(user.uid).set(vendor.toMap());
         Get.snackbar(
           'Sign Up',
-          'User created successfully',
-          backgroundColor: Color(0xFF12FD1A),
+          'User created successfully. Please verify your email before logging in.',
+          backgroundColor: const Color(0xFF12FD1A),
           snackPosition: SnackPosition.BOTTOM,
         );
-        setLoginValue(true);
-        Get.offAllNamed(RoutesConstant.dashpage);
+        setLoginValue(false);
+        Get.offAllNamed(RoutesConstant.loginpage); // Redirect to login after sign-up
       } else {
         Get.back();
         Get.snackbar(
           'Sign Up',
           'Sign up failed. Please try again.',
-          backgroundColor: Color(0xFFFD1212),
+          backgroundColor: const Color(0xFFFD1212),
           snackPosition: SnackPosition.BOTTOM,
         );
       }
@@ -89,7 +88,7 @@ class AuthService {
       Get.snackbar(
         'Error',
         _handleAuthError(e),
-        backgroundColor: Color(0xFFFD1212),
+        backgroundColor: const Color(0xFFFD1212),
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
@@ -97,9 +96,26 @@ class AuthService {
       Get.snackbar(
         'Error',
         'An unexpected error occurred. Please try again.',
-        backgroundColor: Color(0xFFFD1212),
+        backgroundColor: const Color(0xFFFD1212),
         snackPosition: SnackPosition.BOTTOM,
       );
+    }
+  }
+
+  // Handle email verification
+  static Future<void> checkEmailVerification() async {
+    User? user = _auth.currentUser;
+    await user!.reload(); // Reload user to fetch updated status
+    if (!user.emailVerified) {
+      Get.snackbar('Email not verified', 'Please verify your email.',
+          backgroundColor: Colors.red);
+      return;
+    } else {
+
+      setLoginValue(true);
+      Get.snackbar('Success', 'Email verified successfully',
+          backgroundColor: Colors.green);
+      Get.offAllNamed(RoutesConstant.dashpage);
     }
   }
 
@@ -119,51 +135,38 @@ class AuthService {
   }
 
   // Login with email and password
-
   static Future<void> loginUser(String email, String password) async {
     try {
       customDialog();
-      // Query vendors collection for a document where email and password match
-      QuerySnapshot vendorSnapshot = await _firestore
-          .collection('vendors')
-          .where('email', isEqualTo: email)
-          .where('password',
-              isEqualTo:
-                  password) // Ensure password is stored securely (hashed)
-          .get();
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      if (vendorSnapshot.docs.isNotEmpty) {
-        // Email and password match found in the vendors collection
-        // Now you can perform login, e.g., Firebase authentication
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password:
-              password, // For Firebase Auth, you need to store passwords hashed in Firestore
+      User? user = userCredential.user;
+      if (user != null && !user.emailVerified) {
+        Get.back();
+        Get.snackbar(
+          'Error',
+          'Email is not verified. Please check your inbox.',
+          backgroundColor: Colors.red,
         );
-
-        // Navigate to the home screen or show success message
-        Get.back();
-        setLoginValue(true);
-        Get.snackbar('Success', 'Login successful',
-            backgroundColor: Colors.green);
-        Get.offAllNamed(RoutesConstant.dashpage); // Navigate to the home screen
-      } else {
-        // No matching vendor found
-        Get.back();
-        Get.snackbar('Error', 'Invalid email or password',
-            backgroundColor: Colors.red);
+        return;
       }
+
+      setLoginValue(true);
+      Get.snackbar('Success', 'Login successful', backgroundColor: Colors.green);
+      Get.offAllNamed(RoutesConstant.dashpage);
     } catch (e) {
       Get.back();
-      // Handle errors like network issues or invalid credentials
       Get.snackbar('Error', e.toString(), backgroundColor: Colors.red);
     }
   }
 
-  // login with google
+  // login with Google
   static Future<void> signInWithGoogle() async {
     try {
-      customDialog(); // Assuming this is a loading dialog function
+      customDialog();
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
@@ -175,22 +178,18 @@ class AuthService {
       }
 
       final String googleEmail = googleUser.email;
-
-      // Check if the email exists in the vendors collection
       QuerySnapshot vendorSnapshot = await FirebaseFirestore.instance
           .collection('vendors')
           .where('email', isEqualTo: googleEmail)
           .get();
 
       if (vendorSnapshot.docs.isEmpty) {
-        // If no document found with the given email, don't allow login
-        Get.back(); // Close the loading dialog
+        Get.back();
         Get.snackbar("Error", "No vendor found with this email",
             backgroundColor: Colors.red);
         return;
       }
 
-      // If email exists in vendors collection, proceed with Google sign-in
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
@@ -200,11 +199,9 @@ class AuthService {
 
       await _auth.signInWithCredential(credential).then((userCredential) async {
         await googleSignIn.disconnect();
-        Get.back();
         setLoginValue(true);
-        Get.offAllNamed(
-            RoutesConstant.dashpage); // Navigate to the dashboard page
-            Get.snackbar("Success", "Login Successful",
+        Get.offAllNamed(RoutesConstant.dashpage);
+        Get.snackbar("Success", "Login Successful",
             backgroundColor: const Color(0xFF27F52E));
       });
     } on FirebaseAuthException catch (e) {
@@ -215,6 +212,24 @@ class AuthService {
       Get.snackbar("Error", e.toString(), backgroundColor: Colors.red);
     }
   }
+
+  // Logout
+  static Future<void> signOut() async {
+    await _auth.signOut();
+    setLoginValue(false);
+  }
+
+  static Future<void> setLoginValue(bool value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    gbl.isLogin.value = value;
+    prefs.setBool("isLogin", gbl.isLogin.value);
+  }
+
+  static Future<void> getLoginValue() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    gbl.isLogin.value = prefs.getBool("isLogin") ?? false;
+  }
+
 
   static Future<void> signUpWithGoogle() async {
     try {
@@ -306,19 +321,19 @@ class AuthService {
   }
 
   // Logout
-  static Future<void> signOut() async {
-    await _auth.signOut();
-    setLoginValue(false);
-  }
+  // static Future<void> signOut() async {
+  //   await _auth.signOut();
+  //   setLoginValue(false);
+  // }
 
-  // check login signup status function 
-  static Future<void> setLoginValue(bool value)async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    gbl.isLogin.value = value;
-    prefs.setBool("isLogin", gbl.isLogin.value);
-  }
-   static Future<void> getLoginValue() async {
-   final SharedPreferences prefs = await SharedPreferences.getInstance();
-    gbl.isLogin.value = prefs.getBool("isLogin") ?? false;
-  }
+  // // check login signup status function 
+  // static Future<void> setLoginValue(bool value)async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   gbl.isLogin.value = value;
+  //   prefs.setBool("isLogin", gbl.isLogin.value);
+  // }
+  //  static Future<void> getLoginValue() async {
+  //  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   gbl.isLogin.value = prefs.getBool("isLogin") ?? false;
+  // }
 }
