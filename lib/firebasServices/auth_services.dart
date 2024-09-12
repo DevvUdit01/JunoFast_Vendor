@@ -65,7 +65,7 @@ class AuthService {
         await user!.sendEmailVerification();
 
         // Save vendor details to Firestore after email verification
-                      await _firestore.collection('vendors').doc(user.uid).set(vendor.toMap());
+                    
         Get.snackbar(
           'Sign Up',
           'User created successfully. Please verify your email before logging in.',
@@ -103,7 +103,7 @@ class AuthService {
   }
 
   // Handle email verification
-  static Future<void> checkEmailVerification() async {
+  static Future<void> checkEmailVerification(VendorModel vendor) async {
     User? user = _auth.currentUser;
     await user!.reload(); // Reload user to fetch updated status
     if (!user.emailVerified) {
@@ -115,6 +115,7 @@ class AuthService {
       setLoginValue(true);
       Get.snackbar('Success', 'Email verified successfully',
           backgroundColor: Colors.green);
+      await _firestore.collection('vendors').doc(user.uid).set(vendor.toMap());
       Get.offAllNamed(RoutesConstant.dashpage);
     }
   }
