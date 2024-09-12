@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../core/model.dart';
 
 class BookingPageController extends GetxController {
-  TextEditingController dateController =TextEditingController();
+  TextEditingController pickupDateController =TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String vendorId = "UDtTGLIHgdTQQFtTwXow"; // Replace with actual vendor ID or fetch dynamically
 
@@ -51,84 +51,93 @@ class BookingPageController extends GetxController {
     });
   }
 
-void updateLead(BuildContext context, Booking booking) {
+ void updateLead(BuildContext context, Booking booking) {
   final amountController = TextEditingController(text: booking.amount.toString());
 
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text('Update Booking'),
+        title: const Text('Update Booking'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                     labelText: 'Amount',
-                    border: const OutlineInputBorder(
+                    border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey),
                       borderRadius: BorderRadius.all(Radius.elliptical(12, 12)),
                     ),
-                    fillColor: Colors.grey.shade100,
+                    fillColor: Colors.white,
                     filled: true),
             ),
-            SizedBox(height: 8,),
+            const SizedBox(height: 8,),
              Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                onTap: () {
-                  showCalender();
-                },
-                controller: dateController,
+              child:  TextField(
+                controller: pickupDateController,
+                readOnly: true,
                 decoration: InputDecoration(
-                    labelText: 'Select Pickup Date',
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.elliptical(12, 12)),
-                    ),
-                    fillColor: Colors.grey.shade100,
-                    filled: true),
-                keyboardType: TextInputType.none,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please Enter Pickup Date';
+                  labelText: "Pickup Date",
+                  suffixIcon: const Icon(Icons.calendar_today, color: Colors.orange),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.orange),
+                  ),
+                ),
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                  );
+                  if (pickedDate != null) {
+                    pickupDateController.text =
+                    pickedDate.toLocal().toString().split(' ')[0];
                   }
-                  return null;
                 },
               ),
             ),
           ],
         ),
         actions: [
+          
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            onPressed: () { 
+              Navigator.of(context).pop();
+              pickupDateController.clear();
+              amountController.clear();
+              },
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
               final amount = double.tryParse(amountController.text);
 
-              if (amount != null  && dateController != '') {
+              if (amount != null  && pickupDateController.text !='') {
                 //final formattedDate = "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
-
                 // Update the booking with the new amount, schedule time, and pickup date
                 await _firestore.collection('bookings').doc(booking.id).update({
                   'amount': amount,
-                  'pickupDate': dateController,
+                  'pickupDate': pickupDateController.text,
                   'status': 'ongoing',
                 });
-
                 // Update the total amount in the payment collection
                 await updateTotalAmountInPayment(booking.id, amount);
-
+                pickupDateController.clear();
+                amountController.clear();
                 Navigator.of(context).pop(); // Close dialog
               } else {
-                Get.snackbar('Error', 'Please enter a valid amount, schedule time, and pickup date');
+                Get.snackbar('Error', 'Please enter a valid amount, and pickup date');
               }
             },
-            child: Text('Submit'),
+            child: const Text('Submit'),
           ),
         ],
       );
@@ -172,12 +181,12 @@ Future<void> updateTotalAmountInPayment(String bookingId, double updatedAmount) 
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Confirm Completion'),
-          content: Text('Are you sure you have completed the booking?'),
+          title: const Text('Confirm Completion'),
+          content: const Text('Are you sure you have completed the booking?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () async {
@@ -195,27 +204,12 @@ Future<void> updateTotalAmountInPayment(String bookingId, double updatedAmount) 
                 // Refresh the list by calling fetchBookingsForVendor again
                 fetchBookingsForVendor();
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
           ],
         );
       },
 );
 }
-
- void showCalender() async {
-    DateTime? userSelectDate = await showDatePicker(
-      context: Get.overlayContext!,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(DateTime.now().year + 2),
-    );
-    if (userSelectDate != null) {
-      dateController.text =
-          "${userSelectDate.year}-${userSelectDate.month}-${userSelectDate.day}";
-    } else {
-      print('date not selected');
-    }
-  }
 
 }

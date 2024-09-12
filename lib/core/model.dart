@@ -33,24 +33,24 @@ class Lead {
     final data = doc.data() as Map<String, dynamic>;
     return Lead(
       id: doc.id,
-      pickupLocation: data['pickup_location'] as String? ?? '',
-      dropLocation: data['drop_location'] as String? ?? '',
-      vehicleType: data['vehicleType'] as String? ?? '',
-      status: data['status'] as String? ?? 'pending',
-      amount: data['amount'] != null ? (data['amount'] as num).toDouble() : 0.0,
-      clientName: data['clientName'] as String? ?? '',
-      clientNumber: data['clientNumber'] as String? ?? '',
-      pickupDate: data['pickupDate'] as String? ?? '', // Read as String
-      timestamp: data['timestamp'] as Timestamp? ?? Timestamp.now(),
-      notifiedVendors: List<String>.from(data['notifiedVendors'] ?? []),
-      acceptedBy: data['acceptedBy'] as String?,
+      pickupLocation: data['pickupLocation'] ,
+      dropLocation: data['dropLocation'],
+      vehicleType: data['vehicleType'] ,
+      status: data['status'] ,
+      amount: data['amount'] ,
+      clientName: data['clientName'],
+      clientNumber: data['clientNumber'],
+      pickupDate: data['pickupDate'] , // Read as String
+      timestamp: data['timestamp'],
+      notifiedVendors: List<String>.from(data['notifiedVendors']),
+      acceptedBy: data['acceptedBy'] ,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'pickup_location': pickupLocation,
-      'drop_location': dropLocation,
+      'pickupLocation': pickupLocation,
+      'dropLocation': dropLocation,
       'vehicleType': vehicleType,
       'status': status,
       'amount': amount,
@@ -104,28 +104,25 @@ class Booking {
 
   factory Booking.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    print('line no 107');
     print( data['pickupLocation']);
 
     return Booking(
       id: doc.id,
-      pickupLocation: data['pickupLocation'] as String? ?? 'null',
-      dropLocation: data['dropLocation'] as String? ?? 'null',
-      vehicleType: data['vehicleType'] as String? ?? '',
-      status: data['status'] as String? ?? 'pending',
-      amount: data['amount'] != null ? (data['amount'] as num).toDouble() : 0.0,
-      clientName: data['clientName'] as String? ?? '',
-      clientNumber: data['clientNumber'] as String? ?? '',
-      pickupDate: data['pickupDate'] is Timestamp
-          ? (data['pickupDate'] as Timestamp).toDate().toString()
-          : data['pickupDate'] as String? ?? '',
-      timestamp: data['timestamp'] as Timestamp? ?? Timestamp.now(),
-      notifiedVendors: List<String>.from(data['notifiedVendors'] ?? []),
-      acceptedBy: data['acceptedBy'] as String?,
-      driverName: data['driverName'] as String?, // New field
-      driverNumber: data['driverNumber'] as String?, // New field
-      vehicleDetails: data['vehicleDetails'] as String?, // New field
-      vehicleNumber: data['vehicleNumber'] as String?, // New field
+      pickupLocation: data['pickupLocation'],
+      dropLocation: data['dropLocation'] ,
+      vehicleType: data['vehicleType'] ,
+      status: data['status'] ,
+      amount: data['amount'] ,
+      clientName: data['clientName'],
+      clientNumber: data['clientNumber'],
+      pickupDate: data['pickupDate'] ,
+      timestamp: data['timestamp'],
+      notifiedVendors: List<String>.from(data['notifiedVendors']),
+      acceptedBy: data['acceptedBy'] ,
+      driverName: data['driverName'] , 
+      driverNumber: data['driverNumber'] ,
+      vehicleDetails: data['vehicleDetails'] , 
+      vehicleNumber: data['vehicleNumber'] , 
     );
   }
 

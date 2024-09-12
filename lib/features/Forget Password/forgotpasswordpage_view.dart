@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:junofast_vendor/UIHelper/ui_helper.dart';
 import 'forgotpasswordpage_controlller.dart';
 
-class ForgotPasswprdPageView extends GetView<ForgotPasswprdPageController> {
+class ForgotPasswprdPageView extends GetView<ForgotPasswordPageController> {
   const ForgotPasswprdPageView({super.key});
 
   @override

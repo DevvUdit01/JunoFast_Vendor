@@ -142,6 +142,7 @@ class PhoneAuthenticationController extends GetxController {
       AuthService.setLoginValue(true);
       Get.offAllNamed(RoutesConstant.dashpage);
     } else {
+      Get.back();
       Get.snackbar("Error", "User creation canceled", backgroundColor: Colors.red);
     }
   }

@@ -133,7 +133,7 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                                       ? TextButton(
                                           onPressed: controller.resendOtp,
                                           style: TextButton.styleFrom(
-                                            backgroundColor: Colors.blueAccent,
+                                            backgroundColor: const Color.fromARGB(255, 246, 68, 255),
                                             textStyle: const TextStyle(fontSize: 16),
                                           ),
                                           child: const Text('Resend OTP'),

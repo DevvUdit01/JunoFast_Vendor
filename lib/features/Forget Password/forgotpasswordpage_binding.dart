@@ -4,7 +4,7 @@ import 'package:junofast_vendor/features/Forget%20Password/forgotpasswordpage_co
 class ForgotPasswprdPageBinding extends Bindings{
   @override
   void dependencies() {
-    Get.lazyPut(()=>ForgotPasswprdPageController());
+    Get.lazyPut(()=>ForgotPasswordPageController());
   }
   
 }

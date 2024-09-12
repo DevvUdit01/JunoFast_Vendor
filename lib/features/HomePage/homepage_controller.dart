@@ -22,7 +22,7 @@ class HomePageController extends GetxController {
     super.onInit();
     _initializeNotifications();
     fetchAndListenForLeads();
-    _checkAndUpdateVendorLocation();
+    _checkAndUpdateVendorLocation(vendorId);
     _requestNotificationPermission();
 
     // Fetch and store the FCM token
@@ -233,47 +233,47 @@ void fetchAndListenForLeads() {
     }
   }
 
-  Future<void> _checkAndUpdateVendorLocation() async {
-    final status = await Permission.location.status;
-    if (!status.isGranted) {
-      if (await Permission.location.request().isGranted) {
-        // Permission granted
-        await _updateVendorLocation();
-      } else if (await Permission.location.isPermanentlyDenied) {
-        // Show a dialog or snackbar asking the user to enable location in settings
-        Get.snackbar('Location Permission', 'Please enable location permission in settings.', snackPosition: SnackPosition.BOTTOM);
-      } else {
-        // Handle the case when permission is denied
-        print('Location permission is required to update vendor location.');
-      }
+  Future<void> _checkAndUpdateVendorLocation(String vendorId) async {
+  final status = await Permission.location.status;
+
+  if (!status.isGranted) {
+    // Request location permission
+    if (await Permission.location.request().isGranted) {
+      await _updateVendorLocation(vendorId);
+    } else if (await Permission.location.isPermanentlyDenied) {
+      // Notify user to enable permission in settings
+      Get.snackbar('Location Permission', 'Please enable location permission in settings.', snackPosition: SnackPosition.BOTTOM);
     } else {
-      // Permission already granted
-      await _updateVendorLocation();
+      print('Location permission is required to update vendor location.');
     }
+  } else {
+    // Permission already granted
+    await _updateVendorLocation(vendorId);
   }
+}
 
 
-  Future<void> _updateVendorLocation() async {
-    try {
-      DocumentSnapshot vendorDoc = await _firestore.collection('vendors').doc(vendorId).get();
-      var data = vendorDoc.data() as Map<String, dynamic>?;
+  Future<void> _updateVendorLocation(String vendorId) async {
+  try {
+    // Fetch current location
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
-      if (data == null || !data.containsKey('location') || data['location'] is! GeoPoint) {
-        print('Vendor location is missing or not formatted as GeoPoint. Updating with current location.');
+    // Update location in Firestore
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await firestore.collection('vendors').doc(vendorId).update({
+      'location': {
+        'latitude': position.latitude,
+        'longitude': position.longitude,
+      },
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
 
-        Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-        GeoPoint updatedLocation = GeoPoint(position.latitude, position.longitude);
-
-        await _firestore.collection('vendors').doc(vendorId).update({'location': updatedLocation});
-        print('Vendor location updated successfully.');
-      } else {
-        GeoPoint location = data['location'] as GeoPoint;
-        print('Vendor location is valid: ${location.latitude}, ${location.longitude}');
-      }
-    } catch (e) {
-      print('Error updating vendor location: $e');
-    }
+    Get.snackbar('Location Updated', 'Vendor location updated successfully.', snackPosition: SnackPosition.BOTTOM);
+  } catch (e) {
+    print('Error fetching location: $e');
+    Get.snackbar('Error', 'Failed to update location.', snackPosition: SnackPosition.BOTTOM);
   }
+}
 
   Future<void> _requestNotificationPermission() async {
     if (await Permission.notification.isGranted) {
