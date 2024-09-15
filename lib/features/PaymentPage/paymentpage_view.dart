@@ -1,12 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'paymentpage_controller.dart';
 
 class PaymentPageView extends StatelessWidget {
-  final String vendorId = 'UDtTGLIHgdTQQFtTwXow'; // Vendor ID to fetch payments
+  const PaymentPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // fetch current user id
+    String vendorId = FirebaseAuth.instance.currentUser!.uid;
     // Instantiate the PaymentController
     final PaymentPageController paymentController = Get.put(PaymentPageController());
 
@@ -19,7 +22,7 @@ class PaymentPageView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Payment Details',
           style: TextStyle(color: Colors.white),
         ),
@@ -28,12 +31,12 @@ class PaymentPageView extends StatelessWidget {
       body: Obx(() {
         // Show a loading indicator while fetching data
         if (paymentController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         // Check if there are no payments
         if (paymentController.payments.isEmpty) {
-          return Center(
+          return const Center(
             child: Text('No payment details available.'),
           );
         }
@@ -49,9 +52,10 @@ class PaymentPageView extends StatelessWidget {
             String bookingId = payment['bookingId'];
             int totalAmount = payment['totalAmount'].toInt();
             int amountReceived = (payment['amountReceived'] ?? 0).toInt();
+            int remainingAmount = totalAmount-amountReceived;
 
             return Card(
-              margin: EdgeInsets.all(16.0),
+              margin: const EdgeInsets.all(16.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 side: BorderSide(color: secondaryColor, width: 1.5), // Thin orange border
@@ -71,17 +75,17 @@ class PaymentPageView extends StatelessWidget {
                         color: secondaryColor, // Orange color for Booking ID
                       ),
                     ),
-                    SizedBox(height: 12.0),
+                    const SizedBox(height: 12.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Amount Received:',
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                         ),
                         Text(
                           '₹${amountReceived.toStringAsFixed(2)}', // Using rupee symbol
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.green,
@@ -89,17 +93,35 @@ class PaymentPageView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        const Text(
+                          'Remaining Amount:',
+                          style: TextStyle(fontSize: 16.0, color: Colors.black),
+                        ),
                         Text(
+                          '₹${remainingAmount.toStringAsFixed(2)}', // Using rupee symbol
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
                           'Total Amount:',
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                         ),
                         Text(
                           '₹${totalAmount.toStringAsFixed(2)}', // Using rupee symbol
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.red,

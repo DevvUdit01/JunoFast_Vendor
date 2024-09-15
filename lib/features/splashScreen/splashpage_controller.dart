@@ -12,9 +12,9 @@ class SplashScreenController extends GetxController {
     chekLoginStatus();
   }
 
-  void chekLoginStatus(){
+  void chekLoginStatus()async{
   // get login value
-   AuthService.getLoginValue();
+  await AuthService.getLoginValue();
   // splash screeen timer
     Timer(const Duration(seconds: 3), () {
       if (gbl.isLogin.value == true) {         

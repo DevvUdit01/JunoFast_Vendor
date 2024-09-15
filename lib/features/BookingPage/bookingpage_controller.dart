@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,8 @@ import '../../core/model.dart';
 class BookingPageController extends GetxController {
   TextEditingController pickupDateController =TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String vendorId = "UDtTGLIHgdTQQFtTwXow"; // Replace with actual vendor ID or fetch dynamically
-
+  String vendorId= FirebaseAuth.instance.currentUser!.uid; // Replace with actual vendor ID or fetch dynamically
+  
   var processingBookings = <Booking>[].obs;
   var ongoingBookings = <Booking>[].obs;
   var completedBookings = <Booking>[].obs;
@@ -33,7 +34,6 @@ class BookingPageController extends GetxController {
         print('Processing document: ${doc.id}');
         var booking = Booking.fromDocument(doc);
         print('Booking status: ${booking.status}');
-
         if (booking.status == 'processing' || booking.status == 'ongoing') {
           ongoing.add(booking);
         } else if (booking.status == 'completed') {
@@ -107,7 +107,6 @@ class BookingPageController extends GetxController {
           ],
         ),
         actions: [
-          
           TextButton(
             onPressed: () { 
               Navigator.of(context).pop();
@@ -119,7 +118,6 @@ class BookingPageController extends GetxController {
           TextButton(
             onPressed: () async {
               final amount = double.tryParse(amountController.text);
-
               if (amount != null  && pickupDateController.text !='') {
                 //final formattedDate = "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
                 // Update the booking with the new amount, schedule time, and pickup date
@@ -130,9 +128,9 @@ class BookingPageController extends GetxController {
                 });
                 // Update the total amount in the payment collection
                 await updateTotalAmountInPayment(booking.id, amount);
+                Get.back(); // Close dialog
                 pickupDateController.clear();
                 amountController.clear();
-                Navigator.of(context).pop(); // Close dialog
               } else {
                 Get.snackbar('Error', 'Please enter a valid amount, and pickup date');
               }
@@ -149,14 +147,11 @@ Future<void> updateTotalAmountInPayment(String bookingId, double updatedAmount) 
   try {
     // Fetch the current payment document for this booking
     DocumentSnapshot paymentDoc = await _firestore.collection('payments').doc(bookingId).get();
-
     if (paymentDoc.exists) {
       // Get the current total amount from the payment document
       //double currentTotal = paymentDoc['totalAmount'] ?? 0.0;
-
       // Calculate the new total by adding the updated amount
       //double newTotal = currentTotal + updatedAmount;
-
       // Update the total amount in the payment collection
       await _firestore.collection('payments').doc(bookingId).update({
         'totalAmount': updatedAmount,
@@ -168,7 +163,6 @@ Future<void> updateTotalAmountInPayment(String bookingId, double updatedAmount) 
       await _firestore.collection('payment').doc(bookingId).set({
         'totalAmount': updatedAmount,
       });
-
       print('New payment document created with total amount.');
     }
   } catch (e) {
@@ -194,13 +188,10 @@ Future<void> updateTotalAmountInPayment(String bookingId, double updatedAmount) 
                 await _firestore.collection('bookings').doc(booking.id).update({
                   'status': 'completed',
                 });
-
                 // Remove the dialog
                 Navigator.of(context).pop();
-
                 // Show a success Snackbar
                 Get.snackbar('Success', 'Booking has been marked as completed');
-
                 // Refresh the list by calling fetchBookingsForVendor again
                 fetchBookingsForVendor();
               },

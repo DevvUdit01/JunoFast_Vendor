@@ -12,7 +12,9 @@ class VendorModel {
   late String role;
   late String packing;
   late bool registerFirm;
-  late List booking;
+  late List bookings;
+  Map<String,dynamic> location;
+  late String fcmToken;
 
   VendorModel({
     required this.name,
@@ -26,7 +28,9 @@ class VendorModel {
     required this.role,
     required this.packing,
     required this.registerFirm,
-    required this.booking,
+    required this.bookings,
+    required this.location,
+    required this.fcmToken,
   });
 
   factory VendorModel.fromDocumentSnapshot(DocumentSnapshot doc) {
@@ -42,7 +46,9 @@ class VendorModel {
       role: doc['role'],
       packing: doc['packing'],
       registerFirm: doc['registerFirm'],
-      booking: List.from(doc['booking']),
+      bookings: List.from(doc['bookings']),
+      location: doc['location'],
+      fcmToken: doc['fcmToken'],
     );
   }
 
@@ -59,7 +65,9 @@ class VendorModel {
       'role': role,
       'packing': packing,
       'registerFirm': registerFirm,
-      'booking': booking,
+      'bookings': bookings,
+      'location': location,
+      'fcmToken': fcmToken,
     };
   }
 }

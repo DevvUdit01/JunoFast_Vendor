@@ -3,17 +3,16 @@ import 'package:get/get.dart';
 import '../../core/model.dart';
 import 'bookingpage_controller.dart';
 
+// ignore: must_be_immutable
 class BookingPageView extends StatelessWidget {
   final BookingPageController controller = Get.put(BookingPageController());
 
   BookingPageView({super.key});
-   // Define colors based on the theme
+    // Define colors based on the theme
     Color primaryColor = Colors.white;
     Color secondaryColor = Colors.orange;
-  @override
+    @override
   Widget build(BuildContext context) {
-   
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -131,11 +130,11 @@ class BookingPageView extends StatelessWidget {
                         subtitle: Row(
                           children: [
                             const Text('Status : ',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.black)),
-                                    Text(booking.status,
-                                style: const TextStyle(
-                                    fontSize: 18.0, color: Colors.green)),
+                              style: TextStyle(
+                              fontSize: 16.0, color: Colors.black)),
+                              Text(booking.status,
+                              style: const TextStyle(
+                              fontSize: 18.0, color: Colors.green)),
                           ],
                         ),
                         onTap: () =>
@@ -157,7 +156,6 @@ class BookingPageView extends StatelessWidget {
     // Convert GeoPoint to real addresses
     // String pickupAddress = await _getAddressFromGeoPoint(booking.pickupLocation);
     // String dropAddress = await _getAddressFromGeoPoint(booking.dropLocation);
-
     showDialog(
       context: context,
       builder: (context) {
@@ -174,7 +172,7 @@ class BookingPageView extends StatelessWidget {
             child: ListBody(
               children: [
                 Text('Booking ID: ${booking.id}',
-                    style: TextStyle(color: secondaryColor)),
+                style: TextStyle(color: secondaryColor)),
                 Text('Client Name: ${booking.clientName}'),
                 Text('Client Number: ${booking.clientNumber}'),
                 Text('Vehicle Type: ${booking.vehicleType}'),

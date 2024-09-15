@@ -143,6 +143,8 @@ class PhoneAuthenticationController extends GetxController {
       Get.offAllNamed(RoutesConstant.dashpage);
     } else {
       Get.back();
+       User? user = _auth.currentUser;
+       user!.delete();
       Get.snackbar("Error", "User creation canceled", backgroundColor: Colors.red);
     }
   }

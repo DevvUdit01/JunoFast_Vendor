@@ -74,7 +74,9 @@ class SignUpPageController extends GetxController {
     role: role.value,
     packing: packing.value,
     registerFirm: registerFirm.value,
-    booking: [], // Empty booking list initially
+    bookings: [], // Empty booking list initially
+    location: {},
+    fcmToken:'',
   );
 
    await AuthService.signUpWithEmailAndPassword(vendor);

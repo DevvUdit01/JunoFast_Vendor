@@ -69,7 +69,9 @@ class FormPageController extends GetxController {
       role: role.value,
       packing: packing.value,
       registerFirm: registerFirm.value,
-      booking: [], // Empty booking list initially
+      bookings: [], // Empty booking list initially
+      location: {},
+      fcmToken:'',
     );
 
     // Return the vendor model to the previous page

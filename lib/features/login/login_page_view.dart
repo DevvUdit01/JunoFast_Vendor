@@ -85,6 +85,27 @@ class LoginPageView extends GetView<LoginPageController> {
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
+
+                    const Padding(
+                       padding: EdgeInsets.only(top: 35.0, left: 55, right: 55),
+                       child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                  child: Divider(
+                                  thickness: 1.3,
+                                color: Colors.black,
+                              )),
+                              Text(" or Login with ", style: TextStyle(fontSize: 16)),
+                              Expanded(
+                                  child: Divider(
+                                    thickness: 1.3,
+                                color: Colors.black,
+                              )),
+                            ],
+                          ),
+                     ),
+
                     Padding(
                       padding: const EdgeInsets.only(
                           top: 45.0, left: 55, right: 55, bottom: 40),

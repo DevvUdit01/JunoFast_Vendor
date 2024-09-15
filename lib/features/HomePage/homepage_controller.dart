@@ -1,36 +1,42 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import '../../core/globals.dart'as gbl;
 import '../../core/model.dart';
+import '../../firebasServices/auth_services.dart';
 
 class HomePageController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
+  String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  
   var leads = <Lead>[].obs;
-  final String vendorId = 'UDtTGLIHgdTQQFtTwXow'; // Replace with actual vendor ID
-
+  
+  final String vendorId = 'PzXBfFmAVZWUkIYAeIZFir5EP0y2'; // Replace with actual vendor ID
+    // final RxString currentUserId =''.obs;
   @override
   void onInit() {
     super.onInit();
+   // fetchCuurentUser();
     _initializeNotifications();
     fetchAndListenForLeads();
-    _checkAndUpdateVendorLocation(vendorId);
+    _checkAndUpdateVendorLocation(currentUserId);
     _requestNotificationPermission();
 
     // Fetch and store the FCM token
     _firebaseMessaging.getToken().then((token) async {
-      DocumentSnapshot vendorDoc = await _firestore.collection('vendors').doc(vendorId).get();
+      print('line no 35');
+      DocumentSnapshot vendorDoc = await _firestore.collection('vendors').doc(currentUserId).get();
       var existingToken = vendorDoc['fcmToken'];
-      if (existingToken != token) {
-        await _firestore.collection('vendors').doc(vendorId).update({'fcmToken': token});
+      if (existingToken != token || existingToken == '') {
+        await _firestore.collection('vendors').doc(currentUserId).update({'fcmToken': token});
       }
     });
 
@@ -45,6 +51,13 @@ class HomePageController extends GetxController {
       print("onMessageOpenedApp received: ${message.data}");
       _handleNotificationClick(message);
     });
+  }
+
+  void fetchCuurentUser()async{
+  await AuthService.getLoginValue();
+  // currentUserId = gbl.currentUserUID.value;
+   print('line no 59');
+  // print(currentUserId);
   }
 
   void _initializeNotifications() {
@@ -102,14 +115,14 @@ class HomePageController extends GetxController {
   }
 
 void fetchAndListenForLeads() {
-  print('Fetching and listening for leads for vendor ID: $vendorId');
+  print('Fetching and listening for leads for vendor ID: $currentUserId');
   
   _firestore.collection('leads')
-    .where('notifiedVendors', arrayContains: vendorId)
+    .where('notifiedVendors', arrayContains: currentUserId)
     .snapshots()
     .listen((querySnapshot) {
       if (querySnapshot.docs.isEmpty) {
-        print('No leads found for vendor ID: $vendorId');
+        print('No leads found for vendor ID: $currentUserId');
       } else {
         print('Number of leads fetched: ${querySnapshot.docs.length}');
         leads.value = querySnapshot.docs.map((doc) => Lead.fromDocument(doc)).toList();
@@ -133,19 +146,19 @@ void fetchAndListenForLeads() {
         children: [
           TextField(
             controller: driverNameController,
-            decoration: InputDecoration(labelText: 'Driver Name'),
+            decoration: const InputDecoration(labelText: 'Driver Name'),
           ),
           TextField(
             controller: driverNumberController,
-            decoration: InputDecoration(labelText: 'Driver Number'),
+            decoration: const InputDecoration(labelText: 'Driver Number'),
           ),
           TextField(
             controller: vehicleDetailsController,
-            decoration: InputDecoration(labelText: 'Vehicle Details'),
+            decoration: const InputDecoration(labelText: 'Vehicle Details'),
           ),
           TextField(
             controller: vehicleNumberController,
-            decoration: InputDecoration(labelText: 'Vehicle Number'),
+            decoration: const InputDecoration(labelText: 'Vehicle Number'),
           ),
         ],
       ),
@@ -156,11 +169,12 @@ void fetchAndListenForLeads() {
         String driverNumber = driverNumberController.text;
         String vehicleDetails = vehicleDetailsController.text;
         String vehicleNumber = vehicleNumberController.text;
-
-        // Ask for confirmation before proceeding
-        Get.defaultDialog(
+        
+        if(driverName!='' && driverNumber!='' && vehicleNumber!='' && vehicleDetails!=''){
+           // Ask for confirmation before proceeding
+          Get.defaultDialog(
           title: 'Confirm Details',
-          content: Text('Are you sure you want to submit these details?'),
+          content: const Text('Are you sure you want to submit these details?'),
           textConfirm: 'Yes',
           textCancel: 'No',
           onConfirm: () async {
@@ -177,6 +191,10 @@ void fetchAndListenForLeads() {
             );
           },
         );
+        } else{
+          Get.snackbar('Error', 'Please Fill the form',
+          backgroundColor: Colors.red,colorText: Colors.white);
+        }
       },
     );
   }
@@ -197,7 +215,7 @@ void fetchAndListenForLeads() {
 
       // Update lead document with transportation details
       await _firestore.collection('leads').doc(leadId).update({
-        'acceptedBy': vendorId,
+        'acceptedBy': currentUserId,
         'status': 'processing',
         'driverName': driverName,
         'driverNumber': driverNumber,
@@ -210,8 +228,8 @@ void fetchAndListenForLeads() {
       Map<String, dynamic>? leadData = leadDocAfterUpdate.data() as Map<String, dynamic>?;
 
       if (leadData != null) {
-        // Add vendorId to the lead data
-        leadData['acceptedBy'] = vendorId;
+        // Add currentUserId to the lead data
+        leadData['acceptedBy'] = currentUserId;
 
         // Move lead to bookings collection using the same lead ID
         await _firestore.collection('bookings').doc(leadId).set(leadData);
@@ -233,13 +251,13 @@ void fetchAndListenForLeads() {
     }
   }
 
-  Future<void> _checkAndUpdateVendorLocation(String vendorId) async {
+  Future<void> _checkAndUpdateVendorLocation(String currentUserId) async {
   final status = await Permission.location.status;
 
   if (!status.isGranted) {
     // Request location permission
     if (await Permission.location.request().isGranted) {
-      await _updateVendorLocation(vendorId);
+      await _updateVendorLocation(currentUserId);
     } else if (await Permission.location.isPermanentlyDenied) {
       // Notify user to enable permission in settings
       Get.snackbar('Location Permission', 'Please enable location permission in settings.', snackPosition: SnackPosition.BOTTOM);
@@ -248,19 +266,19 @@ void fetchAndListenForLeads() {
     }
   } else {
     // Permission already granted
-    await _updateVendorLocation(vendorId);
+    await _updateVendorLocation(currentUserId);
   }
 }
 
 
-  Future<void> _updateVendorLocation(String vendorId) async {
+  Future<void> _updateVendorLocation(String currentUserId) async {
   try {
     // Fetch current location
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     // Update location in Firestore
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    await firestore.collection('vendors').doc(vendorId).update({
+    await firestore.collection('vendors').doc(currentUserId).update({
       'location': {
         'latitude': position.latitude,
         'longitude': position.longitude,
@@ -300,7 +318,7 @@ Future<void> _createPaymentEntry(String bookingId, double amount, Map<String, dy
     await _firestore.collection('payments').doc(bookingId).set({
       'totalAmount': amount,
       'leadDetails': details,
-      'vendorId': vendorId, // Vendor ID associated with the payment
+      'currentUserId': currentUserId, // Vendor ID associated with the payment
       'bookingId': bookingId, // Reference to the booking ID
     });
 
