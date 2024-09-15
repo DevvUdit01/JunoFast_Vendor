@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'paymentpage_controller.dart';
@@ -8,13 +7,10 @@ class PaymentPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // fetch current user id
-    String vendorId = FirebaseAuth.instance.currentUser!.uid;
     // Instantiate the PaymentController
     final PaymentPageController paymentController = Get.put(PaymentPageController());
-
     // Fetch the payments when the view is first built
-    paymentController.fetchVendorPayments(vendorId);
+    paymentController.fetchVendorPayments(paymentController.vendorId);
 
     // Define colors based on the theme
     Color primaryColor = Colors.white;

@@ -24,8 +24,8 @@ class LoginPageController extends GetxController {
  
   void _login() async {
      await AuthService.loginUser(
-      emailController.text,
-      passWordController.text,
+      emailController.text.trim(),
+      passWordController.text.trim(),
     );
   }
 

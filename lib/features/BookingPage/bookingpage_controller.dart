@@ -1,13 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:junofast_vendor/firebasServices/auth_services.dart';
 import '../../core/model.dart';
+import '../../core/globals.dart'as gbl;
 
 class BookingPageController extends GetxController {
   TextEditingController pickupDateController =TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  String vendorId= FirebaseAuth.instance.currentUser!.uid; // Replace with actual vendor ID or fetch dynamically
+  String vendorId = gbl.currentUserUID.value; // Replace with actual vendor ID or fetch dynamically
   
   var processingBookings = <Booking>[].obs;
   var ongoingBookings = <Booking>[].obs;
@@ -16,6 +17,7 @@ class BookingPageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    AuthService.getCurrentUserUID();
     fetchBookingsForVendor();
   }
 

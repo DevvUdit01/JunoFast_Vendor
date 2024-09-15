@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../UIHelper/ui_helper.dart';
+import '../../firebasServices/auth_services.dart';
 import 'formpage_controller.dart';
 
 class FormPageView extends GetView<FormPageController> {
   const FormPageView({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
+     Get.put(AuthService());
     // Get arguments passed from either Google Sign-in or phone Sign-in
     final Map<String, dynamic> userInfo = Get.arguments;
+    int size =userInfo.length;
     
     // Only set the values once when the page is loaded
-    if (controller.emailController.text.isEmpty) {
+    if (size == 2) {
       // If signing in with Google
       controller.emailController.text = userInfo['email'] ?? '';
       controller.nameController.text = userInfo['name'] ?? '';
-      controller.isGoogleLoging = true;
+      controller.isGoogleLoging.value = true;
     }
     
-    if (controller.phoneController.text.isEmpty) {
+    if (size == 1){
       // If signing in with Phone
-      controller.isGoogleLoging = false;
+      controller.isGoogleLoging.value = false;
       controller.phoneController.text = userInfo['phoneNumber'] ?? '';
     }
 
@@ -92,19 +95,19 @@ class FormPageView extends GetView<FormPageController> {
                       ),
                     ),
                     customTextField("User Name", 'Enter Name', TextInputType.name,Icons.person, controller.nameController),
-                    controller.isGoogleLoging ? customTextField(
+                    controller.isGoogleLoging.value ? customTextFieldNoFilled(
                         "Email",
                         'Enter Email',
                         TextInputType.emailAddress,
                         Icons.email,
                         controller.emailController)
-                    :customTextFieldNoFilled(
+                    :customTextField(
                         "Email",
                         'Enter Email',
                         TextInputType.emailAddress,
                         Icons.email,
                         controller.emailController),
-                      controller.isGoogleLoging ? customTextField(
+                      controller.isGoogleLoging.value ? customTextField(
                         "Mobile Number",
                         'Enter Mobile Number',
                         TextInputType.phone,

@@ -7,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../core/globals.dart'as gbl;
 import '../../core/model.dart';
 import '../../firebasServices/auth_services.dart';
 
@@ -15,16 +14,14 @@ class HomePageController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-  
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String currentUserId = '';
   var leads = <Lead>[].obs;
   
-  final String vendorId = 'PzXBfFmAVZWUkIYAeIZFir5EP0y2'; // Replace with actual vendor ID
-    // final RxString currentUserId =''.obs;
   @override
   void onInit() {
     super.onInit();
-   // fetchCuurentUser();
+    setCuurentUser();
     _initializeNotifications();
     fetchAndListenForLeads();
     _checkAndUpdateVendorLocation(currentUserId);
@@ -53,11 +50,10 @@ class HomePageController extends GetxController {
     });
   }
 
-  void fetchCuurentUser()async{
-  await AuthService.getLoginValue();
-  // currentUserId = gbl.currentUserUID.value;
-   print('line no 59');
-  // print(currentUserId);
+  void setCuurentUser()async{
+    currentUserId = auth.currentUser!.uid.toString();
+    await AuthService.setLoginValue(true);
+    await AuthService.setCurrentUserUID(currentUserId);
   }
 
   void _initializeNotifications() {
@@ -99,10 +95,7 @@ class HomePageController extends GetxController {
 
   void _handleNotificationClick(RemoteMessage message) {
     print('onMessage received: ${message.data}');
-  
-    // Extract the leadId from the notification data
-    String? leadId = message.data['leadId'];
-  
+    
     // if (leadId != null && leadId.isNotEmpty) {
     //   print('Navigating to Lead ID: $leadId');
       

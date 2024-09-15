@@ -125,7 +125,7 @@ class LoginPageView extends GetView<LoginPageController> {
                           ),
                           InkWell(
                             onTap: () {
-                              Get.toNamed(RoutesConstant.phoneAuth,arguments: false);
+                              Get.toNamed(RoutesConstant.phoneAuth,arguments: 0);
                             },
                             child: const Center(
                               child: Icon(

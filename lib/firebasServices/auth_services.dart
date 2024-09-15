@@ -9,16 +9,19 @@ import 'package:junofast_vendor/features/formpage/formpage_view.dart';
 import 'package:junofast_vendor/routing/routes_constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/VendorModel/Vendor_model.dart';
+import '../features/formpage/formpage_controller.dart';
 
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+   // Initialize the FormPageController
+    final FormPageController controller = Get.put(FormPageController());
 
   // Sign up with email and password
- // Signup function
+// Sign up with email and password
 static Future<void> signUpWithEmailAndPassword(VendorModel vendor) async {
   try {
-    customDialog();
+    customDialog(); // Show loading dialog
 
     // Check if email or mobile number is already in Firestore
     final QuerySnapshot emailSnapshot = await _firestore
@@ -33,144 +36,47 @@ static Future<void> signUpWithEmailAndPassword(VendorModel vendor) async {
 
     if (emailSnapshot.docs.isNotEmpty) {
       Get.back();
-      Get.snackbar(
-        'Error',
-        'The email address is already in use by another account.',
-        backgroundColor: const Color(0xFFFD1212),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Error', 'The email address is already in use.', backgroundColor: Colors.red);
       return;
     }
 
     if (phoneSnapshot.docs.isNotEmpty) {
       Get.back();
-      Get.snackbar(
-        'Error',
-        'The mobile number is already in use by another account.',
-        backgroundColor: const Color(0xFFFD1212),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Error', 'The mobile number is already in use.', backgroundColor: Colors.red);
       return;
     }
 
-    // Create user
+    // Create user with email and password
     UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
       email: vendor.email,
       password: vendor.password,
     );
 
     if (userCredential.user != null) {
-      User? user = userCredential.user;
-
       // Send email verification
-     // await user!.sendEmailVerification();
-         // Store vendor details to Firestore after email verification
-       await _firestore.collection('vendors').doc(user!.uid).set(vendor.toMap());
-      setLoginValue(true); // Assuming this handles user login state
-     String? uid = user.uid;
-      setCurrentUserUID(uid);
-      Get.back();
-      Get.snackbar(
-        'Sign Up',
-        'Link sent successfully. Please verify your email before logging in.',
-        backgroundColor: const Color(0xFF12FD1A),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-       Get.offAllNamed(RoutesConstant.dashpage);
-      // Start checking for email verification periodically
-     // await _checkEmailVerificationPeriodically(user, vendor);
+      await userCredential.user!.sendEmailVerification();
+      Get.snackbar('Verify Email', 'Please check your email to verify your account.',
+          backgroundColor: Colors.blue);
 
-    } else {
-      Get.back();
-      User? user = _auth.currentUser;
-      user!.delete();
-      Get.snackbar(
-        'Sign Up',
-        'Sign up failed. Please try again.',
-        backgroundColor: const Color(0xFFFD1212),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // Listen for email verification after user logs in again
+      _auth.userChanges().listen((user) async {
+        if (user != null && user.emailVerified) {
+          // Email verified - create vendor document in Firestore
+          await _firestore.collection('vendors').doc(user.uid).set(vendor.toMap());
+          Get.offAllNamed(RoutesConstant.dashpage);
+        }
+        else{
+          Get.back();
+          User? user = _auth.currentUser;
+          user!.delete();
+        }
+      });
     }
   } on FirebaseAuthException catch (e) {
     Get.back();
-    User? user = _auth.currentUser;
-    user!.delete();
-    Get.snackbar(
-      'Error',
-      _handleAuthError(e),
-      backgroundColor: const Color(0xFFFD1212),
-      snackPosition: SnackPosition.BOTTOM,
-    );
-  } catch (e) {
-    Get.back();
-    User? user = _auth.currentUser;
-    user!.delete();
-    Get.snackbar(
-      'Error',
-      'An unexpected error occurred. Please try again.',
-      backgroundColor: const Color(0xFFFD1212),
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    Get.snackbar('Error',_handleAuthError(e), backgroundColor: Colors.red);
   }
 }
-
-// Function to periodically check email verification
-// Function to periodically check email verification
-static Future<void> _checkEmailVerificationPeriodically(User user, VendorModel vendor) async {
-  bool isEmailVerified = false;
-  int maxRetries = 20; // Check every 15 seconds for 5 minutes (300 seconds total)
-  int retryCount = 0;
-
-  // Check the email verification status every 15 seconds, up to 20 retries
-  while (!isEmailVerified && retryCount < maxRetries) {
-    await Future.delayed(const Duration(seconds: 15)); // Wait 15 seconds before each check
-    await user.reload(); // Reload user to fetch updated status
-    isEmailVerified = user.emailVerified;
-    print(isEmailVerified);
-    print('line no 117');
-    if (isEmailVerified) {
-      print('line no 119');
-      // If email is verified, call checkEmailVerification and break the loop
-      await checkEmailVerification(vendor);
-      break;
-    }
-
-    retryCount++;
-  }
-
-  if (!isEmailVerified) {
-    // If the email is still not verified after retries, show a warning
-    Get.snackbar(
-      'Email Not Verified',
-      'You did not verify your email in time. Please try again.',
-      backgroundColor: const Color(0xFFFD1212),
-      snackPosition: SnackPosition.BOTTOM,
-    );
-
-    User? user = _auth.currentUser;
-    user!.delete();
-    Get.offAllNamed(RoutesConstant.loginpage);
-  }
-}
-
-// Handle email verification and vendor data storage
-static Future<void> checkEmailVerification(VendorModel vendor) async {
-  User? user = _auth.currentUser;
-  print('line no 143');
-  // Store vendor details to Firestore after email verification
-  await _firestore.collection('vendors').doc(user!.uid).set(vendor.toMap());
-
-  setLoginValue(true); // Assuming this handles user login state
-  String? uid = user.uid;
-  setCurrentUserUID(uid);
-  Get.snackbar(
-    'Success',
-    'Email verified and data stored successfully.',
-    backgroundColor: Colors.green,
-  );
-  Get.offAllNamed(RoutesConstant.dashpage); // Redirect to dashboard
-}
-
 
   static String _handleAuthError(FirebaseAuthException e) {
     switch (e.code) {
@@ -191,13 +97,12 @@ static Future<void> checkEmailVerification(VendorModel vendor) async {
   static Future<void> loginUser(String email, String password) async {
     try {
       customDialog();
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       User? user = userCredential.user;
-      print('line no 185  ${user?.emailVerified}');
       if (user != null && !user.emailVerified) {
         Get.back();
         Get.snackbar(
@@ -207,9 +112,7 @@ static Future<void> checkEmailVerification(VendorModel vendor) async {
         );
         return;
       }
-      String? uid = user!.uid;
-      setCurrentUserUID(uid);
-      setLoginValue(true);
+      Get.back();
       Get.snackbar('Success', 'Login successful', backgroundColor: Colors.green);
       Get.offAllNamed(RoutesConstant.dashpage);
     } catch (e) {
@@ -254,9 +157,6 @@ static Future<void> checkEmailVerification(VendorModel vendor) async {
 
         await _auth.signInWithCredential(credential).then((userCredential) async {
         await googleSignIn.disconnect();
-        setLoginValue(true);
-        String? uid = userCredential.user!.uid;
-        setCurrentUserUID(uid);
         Get.offAllNamed(RoutesConstant.dashpage);
         Get.snackbar("Success", "Login Successful",
         backgroundColor: const Color(0xFF27F52E));
@@ -312,14 +212,12 @@ static Future<void> checkEmailVerification(VendorModel vendor) async {
             await _firestore.collection('vendors').doc(user.uid).get();
 
         if (!vendorDoc.exists) {
-          print('line no 262');
            // Navigate to form page to collect additional vendor details
-    final VendorModel? newVendor = await Get.off<VendorModel>(FormPageView(),
+    final VendorModel? newVendor = await Get.to<VendorModel>(FormPageView(),
       arguments: {'email': googleEmail, 'name': googleName},
     );
           // Ensure the vendor model is returned
           if (newVendor != null) {
-            print('line no 273');
             customDialog();
             // Save vendor details to Firestore
             await _firestore
@@ -327,14 +225,10 @@ static Future<void> checkEmailVerification(VendorModel vendor) async {
                 .doc(user.uid)
                 .set(newVendor.toMap());
                 Get.back();
-                setLoginValue(true);
-                String? uid = user.uid;
-                setCurrentUserUID(uid);
-            Get.snackbar("Success", "User account created successfully",
+                Get.snackbar("Success", "User account created successfully",
                 backgroundColor: Colors.green);
                 Get.offAllNamed(RoutesConstant.dashpage);
           } else {
-             print('line no 283');
               Get.back();
                User? user = _auth.currentUser;
                user!.delete();
@@ -343,7 +237,6 @@ static Future<void> checkEmailVerification(VendorModel vendor) async {
               backgroundColor: Colors.red);
           }
         } 
-        print('user note create');
       } else {
         Get.back();
         Get.snackbar("Error", "Failed to sign in with Google",
@@ -353,12 +246,10 @@ static Future<void> checkEmailVerification(VendorModel vendor) async {
       // Disconnect Google Sign-In
       await googleSignIn.disconnect();
     } on FirebaseAuthException catch (e) {
-      print("Firebase ${e.code.toString()}");
       Get.back();
       Get.snackbar("Error", e.message ?? "Unknown Firebase error",
           backgroundColor: Colors.red);
     } catch (e) {
-      print("Error catch ${e.toString()}");
       Get.back();
       Get.snackbar("Error", e.toString(), backgroundColor: Colors.red);
     }

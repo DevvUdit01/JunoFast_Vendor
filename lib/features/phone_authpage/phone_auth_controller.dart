@@ -23,7 +23,6 @@ class PhoneAuthenticationController extends GetxController {
   RxInt remainingTime = 60.obs;
   Timer? timer;
   RxBool isResendEnabled = false.obs;
-  late bool isSignUp;
 
   @override
   void onClose() {
@@ -34,28 +33,24 @@ class PhoneAuthenticationController extends GetxController {
   }
 
   // Validate phone number and send OTP
-  void checkValidate() {
+  void checkValidate({required isSignUp}) {
     if (phoneKey.currentState!.validate()) {
-      fetchPhoneNumberAndSendOtp();
+      fetchPhoneNumberAndSendOtp(isSignUp: isSignUp);
     }
   }
 
   // Fetch phone number from Firestore and send OTP
-  Future<void> fetchPhoneNumberAndSendOtp() async {
+  Future<void> fetchPhoneNumberAndSendOtp({required isSignUp}) async {
     final phoneNumber = "+91${phoneController.text.trim()}";
     final vendorDoc = await _firestore.collection('vendors')
         .where('mobileNumber', isEqualTo: phoneNumber)
         .get();
 
-    if (isSignUp && vendorDoc.docs.isNotEmpty) {
-      print('line no 51 signup');
+    if (isSignUp==1 && vendorDoc.docs.isNotEmpty) {
       Get.snackbar("Error", "This mobile number already exists", backgroundColor: Colors.red);
-    } else if (!isSignUp && vendorDoc.docs.isEmpty) {
-      print('line no 55 sign in');
+    } else if (isSignUp==0 && vendorDoc.docs.isEmpty) {
       Get.snackbar("Error", "This mobile number does not exist", backgroundColor: Colors.red);
     } else {
-      print('line no 57');
-      print(isSignUp);
       isLoading.value = true;
       sendOTP(phoneNumber);
     }
@@ -94,7 +89,7 @@ class PhoneAuthenticationController extends GetxController {
   }
 
   // Verify OTP for both sign-in and sign-up
-  Future<void> verifyOtp({required bool isSignUp}) async {
+  Future<void> verifyOtp({required  isSignUp}) async {
     if (otpController.text.isEmpty || otpController.text.length != 6) {
       Get.snackbar("Error", "Please enter a valid OTP", backgroundColor: Colors.red);
       return;
@@ -111,7 +106,7 @@ class PhoneAuthenticationController extends GetxController {
       final User? user = userCredential.user;
 
       if (user != null) {
-        if (isSignUp) {
+        if (isSignUp == 1) {
           await handleSignUp(user);
         } else {
           handleSignIn();
@@ -129,7 +124,7 @@ class PhoneAuthenticationController extends GetxController {
   // Handle sign-up logic
   Future<void> handleSignUp(User user) async {
     isLoading.value = false;
-    final VendorModel? newVendor = await Get.off<VendorModel>(
+    final VendorModel? newVendor = await Get.to<VendorModel>(
       FormPageView(),
       arguments: {'phoneNumber': user.phoneNumber},
     );
@@ -194,9 +189,9 @@ class PhoneAuthenticationController extends GetxController {
   }
 
   // Resend OTP if enabled
-  void resendOtp() {
+  void resendOtp({required isSignUp}) {
     if (isResendEnabled.value) {
-      fetchPhoneNumberAndSendOtp();
+      fetchPhoneNumberAndSendOtp(isSignUp:isSignUp);
     } else {
       Get.snackbar("Info", "Please wait until the timer ends.");
     }

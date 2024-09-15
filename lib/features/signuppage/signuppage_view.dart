@@ -295,7 +295,7 @@ class SignUpPageView extends GetView<SignUpPageController> {
                               )),
                           InkWell(
                               onTap: () {
-                                Get.toNamed(RoutesConstant.phoneAuth,arguments: true);
+                                Get.toNamed(RoutesConstant.phoneAuth,arguments: 1);
                               },
                               child: const Center(
                                   child: Icon(

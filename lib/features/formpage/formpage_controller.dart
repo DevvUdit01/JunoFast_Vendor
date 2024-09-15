@@ -4,8 +4,8 @@ import '../../core/VendorModel/Vendor_model.dart';
 import '../../firebasServices/auth_services.dart';
 
 class FormPageController extends GetxController {
-  final formKey = GlobalKey<FormState>();
   
+  final formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -18,7 +18,7 @@ class FormPageController extends GetxController {
   var role = ''.obs;
   var termCondition = false.obs;
   var registerFirm = false.obs;
-  late bool isGoogleLoging;
+  var isGoogleLoging = false.obs;
   String? typeOfVehicleRequired;
 
   @override

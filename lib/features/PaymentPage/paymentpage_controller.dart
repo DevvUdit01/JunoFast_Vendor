@@ -1,11 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import '../../core/globals.dart'as gbl;
+import '../../firebasServices/auth_services.dart';
 
 class PaymentPageController extends GetxController {
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   var payments = <Map<String, dynamic>>[].obs; // Observable list of payments
   var isLoading = false.obs;
+   String vendorId = gbl.currentUserUID.value;
+
+   @override
+  void onInit() {
+    super.onInit();
+    AuthService.getCurrentUserUID();
+  }
+
 
   // Fetch payment details for the current vendor
   Future<void> fetchVendorPayments(String vendorId) async {

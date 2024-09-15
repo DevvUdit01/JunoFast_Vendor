@@ -8,7 +8,7 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.isSignUp = Get.arguments;
+    final isSignUp = Get.arguments;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -71,7 +71,7 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                     ElevatedButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        controller.checkValidate();
+                        controller.checkValidate(isSignUp: isSignUp);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.purple,
@@ -131,7 +131,7 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                                 Obx(
                                   () => controller.remainingTime.value == 0
                                       ? TextButton(
-                                          onPressed: controller.resendOtp,
+                                         onPressed: () => controller.resendOtp(isSignUp: isSignUp),
                                           style: TextButton.styleFrom(
                                             backgroundColor: const Color.fromARGB(255, 246, 68, 255),
                                             textStyle: const TextStyle(fontSize: 16),
@@ -144,7 +144,7 @@ class PhoneAuthenticationView extends GetView<PhoneAuthenticationController> {
                                 ElevatedButton(
                                   onPressed: () {
                                     FocusScope.of(context).unfocus();
-                                    controller.verifyOtp(isSignUp: controller.isSignUp);
+                                    controller.verifyOtp(isSignUp: isSignUp);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.purple,
