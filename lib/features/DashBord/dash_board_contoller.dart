@@ -16,7 +16,7 @@ class DashBoardController extends GetxController{
     return [
       const HomePageView(),
        BookingPageView(),
-       PaymentPageView(),      // const Center(child:  Text('setting page')),
+       const PaymentPageView(),      // const Center(child:  Text('setting page')),
       const SettingPageView(),
   
     ];

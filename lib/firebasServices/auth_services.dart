@@ -15,68 +15,112 @@ class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
    // Initialize the FormPageController
-    final FormPageController controller = Get.put(FormPageController());
+  final FormPageController controller = Get.put(FormPageController());
 
   // Sign up with email and password
-// Sign up with email and password
-static Future<void> signUpWithEmailAndPassword(VendorModel vendor) async {
-  try {
-    customDialog(); // Show loading dialog
+  static Future<void> signUpWithEmailAndPassword(VendorModel vendor) async {
+    try {
+      customDialog();
 
-    // Check if email or mobile number is already in Firestore
-    final QuerySnapshot emailSnapshot = await _firestore
-        .collection('vendors')
-        .where('email', isEqualTo: vendor.email)
-        .get();
+      // Check if email or mobile number is already in Firestore
+      final QuerySnapshot emailSnapshot = await _firestore
+          .collection('vendors')
+          .where('email', isEqualTo: vendor.email)
+          .get();
 
-    final QuerySnapshot phoneSnapshot = await _firestore
-        .collection('vendors')
-        .where('mobileNumber', isEqualTo: vendor.mobileNumber)
-        .get();
+      final QuerySnapshot phoneSnapshot = await _firestore
+          .collection('vendors')
+          .where('mobileNumber', isEqualTo: vendor.mobileNumber)
+          .get();
 
-    if (emailSnapshot.docs.isNotEmpty) {
+      if (emailSnapshot.docs.isNotEmpty) {
+        Get.back();
+        Get.snackbar(
+          'Error',
+          'The email address is already in use by another account.',
+          backgroundColor: const Color(0xFFFD1212),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
+      if (phoneSnapshot.docs.isNotEmpty) {
+        Get.back();
+        Get.snackbar(
+          'Error',
+          'The mobile number is already in use by another account.',
+          backgroundColor: const Color(0xFFFD1212),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
+      // Create user
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: vendor.email,
+        password: vendor.password,
+      );
+
+      if (userCredential.user != null) {
+        User? user = userCredential.user;
+        
+        // Send email verification
+        
+        await user!.sendEmailVerification();
+
+        // Save vendor details to Firestore after email verification
+        await _firestore.collection('vendors').doc(user.uid).set(vendor.toMap());
+        
+        Get.snackbar(
+          'Sign Up',
+          'User created successfully. Please verify your email before logging in.',
+          backgroundColor: const Color(0xFF12FD1A),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        Get.offAllNamed(RoutesConstant.loginpage); // Redirect to login after sign-up
+      } else {
+        Get.back();
+        Get.snackbar(
+          'Sign Up',
+          'Sign up failed. Please try again.',
+          backgroundColor: const Color(0xFFFD1212),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
       Get.back();
-      Get.snackbar('Error', 'The email address is already in use.', backgroundColor: Colors.red);
-      return;
-    }
-
-    if (phoneSnapshot.docs.isNotEmpty) {
+      Get.snackbar(
+        'Error',
+        _handleAuthError(e),
+        backgroundColor: const Color(0xFFFD1212),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
       Get.back();
-      Get.snackbar('Error', 'The mobile number is already in use.', backgroundColor: Colors.red);
-      return;
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred. Please try again.',
+        backgroundColor: const Color(0xFFFD1212),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
-
-    // Create user with email and password
-    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: vendor.email,
-      password: vendor.password,
-    );
-
-    if (userCredential.user != null) {
-      // Send email verification
-      await userCredential.user!.sendEmailVerification();
-      Get.snackbar('Verify Email', 'Please check your email to verify your account.',
-          backgroundColor: Colors.blue);
-
-      // Listen for email verification after user logs in again
-      _auth.userChanges().listen((user) async {
-        if (user != null && user.emailVerified) {
-          // Email verified - create vendor document in Firestore
-          await _firestore.collection('vendors').doc(user.uid).set(vendor.toMap());
-          Get.offAllNamed(RoutesConstant.dashpage);
-        }
-        else{
-          Get.back();
-          User? user = _auth.currentUser;
-          user!.delete();
-        }
-      });
-    }
-  } on FirebaseAuthException catch (e) {
-    Get.back();
-    Get.snackbar('Error',_handleAuthError(e), backgroundColor: Colors.red);
   }
-}
+
+  // Handle email verification
+  static Future<void> checkEmailVerification() async {
+    User? user = _auth.currentUser;
+    await user!.reload(); // Reload user to fetch updated status
+    if (!user.emailVerified) {
+      Get.snackbar('Email not verified', 'Please verify your email.',
+          backgroundColor: Colors.red);
+      return;
+    } else {
+      setLoginValue(true);
+      Get.snackbar('Success', 'Email verified successfully',
+          backgroundColor: Colors.green);
+      Get.offAllNamed(RoutesConstant.dashpage);
+    }
+  }
 
   static String _handleAuthError(FirebaseAuthException e) {
     switch (e.code) {
@@ -213,7 +257,7 @@ static Future<void> signUpWithEmailAndPassword(VendorModel vendor) async {
 
         if (!vendorDoc.exists) {
            // Navigate to form page to collect additional vendor details
-    final VendorModel? newVendor = await Get.to<VendorModel>(FormPageView(),
+    final VendorModel? newVendor = await Get.to<VendorModel>(const FormPageView(),
       arguments: {'email': googleEmail, 'name': googleName},
     );
           // Ensure the vendor model is returned

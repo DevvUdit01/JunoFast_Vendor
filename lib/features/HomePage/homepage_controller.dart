@@ -29,7 +29,6 @@ class HomePageController extends GetxController {
 
     // Fetch and store the FCM token
     _firebaseMessaging.getToken().then((token) async {
-      print('line no 35');
       DocumentSnapshot vendorDoc = await _firestore.collection('vendors').doc(currentUserId).get();
       var existingToken = vendorDoc['fcmToken'];
       if (existingToken != token || existingToken == '') {

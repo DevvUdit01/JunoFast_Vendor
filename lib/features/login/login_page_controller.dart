@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:junofast_vendor/firebasServices/auth_services.dart';
+import 'package:junofast_vendor/firebasServices/auth_services.dart';  
 
 class LoginPageController extends GetxController {
   RxBool isSet = true.obs;
