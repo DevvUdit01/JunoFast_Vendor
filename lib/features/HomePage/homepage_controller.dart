@@ -310,7 +310,7 @@ Future<void> _createPaymentEntry(String bookingId, double amount, Map<String, dy
     await _firestore.collection('payments').doc(bookingId).set({
       'totalAmount': amount,
       'leadDetails': details,
-      'currentUserId': currentUserId, // Vendor ID associated with the payment
+      'vendorId': currentUserId, // Vendor ID associated with the payment
       'bookingId': bookingId, // Reference to the booking ID
     });
 
