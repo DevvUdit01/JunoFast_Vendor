@@ -149,13 +149,7 @@ class SignUpPageView extends GetView<SignUpPageController> {
                         },
                       ),
                     ),
-      
-                    customTextField(
-                        "Password",
-                        'Enter Password',
-                        TextInputType.text,
-                        Icons.lock,
-                        controller.passwordController),
+
                     customTextField(
                         "Address",
                         'Enter Address',
@@ -211,6 +205,13 @@ class SignUpPageView extends GetView<SignUpPageController> {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    customTextField(
+                        "Password",
+                        'Enter Password',
+                        TextInputType.text,
+                        Icons.lock,
+                        controller.passwordController),
+                        
                     customTextField(
                         "Confirm Password",
                         'Enter Confirm Password',

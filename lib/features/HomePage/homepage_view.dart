@@ -81,7 +81,7 @@ class HomePageView extends GetView<HomePageController> {
                     children: [
                       Icon(Icons.local_shipping, color: Colors.amber, size: 50),
                       Text(
-                        '  Drop Location: ',
+                      'Lead Data',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -89,19 +89,49 @@ class HomePageView extends GetView<HomePageController> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Drop Location: ${lead.dropLocation}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        'Pickup Location: ${lead.pickupLocation}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 5),
+                       Row(
+                            children: [
+                              const Text(
+                                'Pickup Location: ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 18),
+                              ),
+                              Text(
+                                lead.pickupLocation,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                           Row(
+                            children: [
+                              const Text(
+                                'Drop Location: ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 18),
+                              ),
+                              Text(
+                                lead.dropLocation,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                           Row(
+                            children: [
+                              const Text(
+                                'Amount: ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 18),
+                              ),
+                             Text(
+                                lead.amount.toString(),
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          
                           Row(
                             children: [
                               const Text(

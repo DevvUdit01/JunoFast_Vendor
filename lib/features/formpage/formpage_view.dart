@@ -181,12 +181,6 @@ class FormPageView extends GetView<FormPageController> {
                     ),
       
                     customTextField(
-                        "Password",
-                        'Enter Password',
-                        TextInputType.text,
-                        Icons.lock,
-                        controller.passwordController),
-                    customTextField(
                         "Address",
                         'Enter Address',
                         TextInputType.text,
@@ -241,6 +235,14 @@ class FormPageView extends GetView<FormPageController> {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    
+                    customTextField(
+                        "Password",
+                        'Enter Password',
+                        TextInputType.text,
+                        Icons.lock,
+                        controller.passwordController),
+                        
                     customTextField(
                         "Confirm Password",
                         'Enter Confirm Password',

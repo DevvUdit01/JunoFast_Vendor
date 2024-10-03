@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/model.dart';
 import 'bookingpage_controller.dart';
-import '../../core/globals.dart'as gbl;
 
 // ignore: must_be_immutable
 class BookingPageView extends StatelessWidget {

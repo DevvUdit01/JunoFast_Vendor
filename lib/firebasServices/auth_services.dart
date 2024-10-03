@@ -207,7 +207,12 @@ class AuthService {
       });
     } on FirebaseAuthException catch (e) {
       Get.back();
-      Get.snackbar("Error", e.code.toString(), backgroundColor: Colors.red);
+       Get.snackbar(
+        'Error',
+        _handleAuthError(e),
+        backgroundColor: const Color(0xFFFD1212),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } catch (e) {
       Get.back();
       Get.snackbar("Error", e.toString(), backgroundColor: Colors.red);
@@ -290,9 +295,13 @@ class AuthService {
       // Disconnect Google Sign-In
       await googleSignIn.disconnect();
     } on FirebaseAuthException catch (e) {
-      Get.back();
-      Get.snackbar("Error", e.message ?? "Unknown Firebase error",
-          backgroundColor: Colors.red);
+       Get.back();
+       Get.snackbar(
+        'Error',
+        _handleAuthError(e),
+        backgroundColor: const Color(0xFFFD1212),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } catch (e) {
       Get.back();
       Get.snackbar("Error", e.toString(), backgroundColor: Colors.red);
