@@ -33,7 +33,7 @@ class PaymentPageView extends StatelessWidget {
         // Check if there are no payments
         if (paymentController.payments.isEmpty) {
           return const Center(
-            child: Text('No payment details available.'),
+            child: Text('No payment found.'), // Updated to "No payment found"
           );
         }
 
@@ -48,7 +48,7 @@ class PaymentPageView extends StatelessWidget {
             String bookingId = payment['bookingId'];
             int totalAmount = payment['totalAmount'].toInt();
             int amountReceived = (payment['amountReceived'] ?? 0).toInt();
-            int remainingAmount = totalAmount-amountReceived;
+            int remainingAmount = totalAmount - amountReceived;
 
             return Card(
               margin: const EdgeInsets.all(16.0),
