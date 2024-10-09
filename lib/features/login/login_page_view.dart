@@ -30,12 +30,12 @@ class LoginPageView extends GetView<LoginPageController> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: screenSize.height * 0.1),
+                    SizedBox(height: screenSize.height * 0.01),
                     SizedBox(
                       width: screenSize.width * 0.8,
-                      child: Image.asset('assets/jf_logo.png'),
+                      child: Image.asset('assets/login.png',),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     // Custom Email Field
                     customTextField(
                       "Email",

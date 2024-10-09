@@ -261,6 +261,8 @@ class AuthService {
             await _firestore.collection('vendors').doc(user.uid).get();
 
         if (!vendorDoc.exists) {
+           Get.snackbar("Success", "Google authentication successfull , Now fill these details to complete user creation process .",
+                backgroundColor: Colors.green);
            // Navigate to form page to collect additional vendor details
     final VendorModel? newVendor = await Get.to<VendorModel>(const FormPageView(),
       arguments: {'email': googleEmail, 'name': googleName},
