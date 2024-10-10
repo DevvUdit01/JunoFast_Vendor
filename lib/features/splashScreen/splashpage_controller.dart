@@ -7,6 +7,7 @@ import 'package:junofast_vendor/routing/routes_constant.dart';
 
 
 class SplashScreenController extends GetxController {
+   bool isImageLoaded = false;
    @override
   void onInit() {
     super.onInit();
@@ -19,6 +20,7 @@ class SplashScreenController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    _preloadImage();
     chekLoginStatus();
   }
 
@@ -34,6 +36,11 @@ class SplashScreenController extends GetxController {
         Get.offAllNamed(RoutesConstant.loginpage);
       }
     });
+  }
+   void _preloadImage() async {
+    await precacheImage(AssetImage('assets/jf_splashlogo.png'), Get.context!);
+    isImageLoaded = true;
+    update();  // Notify the UI to update when the image is loaded
   }
 
 }
