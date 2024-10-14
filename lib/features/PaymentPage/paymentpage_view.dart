@@ -37,99 +37,105 @@ class PaymentPageView extends StatelessWidget {
           );
         }
 
-        // ListView to display payment details
-        return ListView.builder(
-          itemCount: paymentController.payments.length,
-          itemBuilder: (context, index) {
-            // Get payment details for the current item
-            Map<String, dynamic> payment = paymentController.payments[index];
-
-            // Extract payment details, using default values if null
-            String bookingId = payment['bookingId'];
-            int totalAmount = payment['totalAmount'].toInt();
-            int amountReceived = (payment['amountReceived'] ?? 0).toInt();
-            int remainingAmount = totalAmount - amountReceived;
-
-            return Card(
-              margin: const EdgeInsets.all(16.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-                side: BorderSide(color: secondaryColor, width: 1.5), // Thin orange border
-              ),
-              elevation: 5,
-              color: primaryColor, // Set card color to white (primary)
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Booking ID: $bookingId',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                        color: secondaryColor, // Orange color for Booking ID
-                      ),
-                    ),
-                    const SizedBox(height: 12.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Amount Received:',
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                        ),
-                        Text(
-                          '₹${amountReceived.toStringAsFixed(2)}', // Using rupee symbol
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Remaining Amount:',
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                        ),
-                        Text(
-                          '₹${remainingAmount.toStringAsFixed(2)}', // Using rupee symbol
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Total Amount:',
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                        ),
-                        Text(
-                          '₹${totalAmount.toStringAsFixed(2)}', // Using rupee symbol
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
+        // RefreshIndicator to enable pull-to-refresh
+        return RefreshIndicator(
+          onRefresh: () async {
+            // Refresh the payment data
+           paymentController.fetchVendorPayments(paymentController.vendorId);
           },
+          child: ListView.builder(
+            itemCount: paymentController.payments.length,
+            itemBuilder: (context, index) {
+              // Get payment details for the current item
+              Map<String, dynamic> payment = paymentController.payments[index];
+
+              // Extract payment details, using default values if null
+              String bookingId = payment['bookingId'];
+              int totalAmount = payment['totalAmount'].toInt();
+              int amountReceived = (payment['amountReceived'] ?? 0).toInt();
+              int remainingAmount = totalAmount - amountReceived;
+
+              return Card(
+                margin: const EdgeInsets.all(16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                  side: BorderSide(color: secondaryColor, width: 1.5), // Thin orange border
+                ),
+                elevation: 5,
+                color: primaryColor, // Set card color to white (primary)
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Booking ID: $bookingId',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                          color: secondaryColor, // Orange color for Booking ID
+                        ),
+                      ),
+                      const SizedBox(height: 12.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Amount Received:',
+                            style: TextStyle(fontSize: 16.0, color: Colors.black),
+                          ),
+                          Text(
+                            '₹${amountReceived.toStringAsFixed(2)}', // Using rupee symbol
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Remaining Amount:',
+                            style: TextStyle(fontSize: 16.0, color: Colors.black),
+                          ),
+                          Text(
+                            '₹${remainingAmount.toStringAsFixed(2)}', // Using rupee symbol
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Total Amount:',
+                            style: TextStyle(fontSize: 16.0, color: Colors.black),
+                          ),
+                          Text(
+                            '₹${totalAmount.toStringAsFixed(2)}', // Using rupee symbol
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         );
       }),
     );

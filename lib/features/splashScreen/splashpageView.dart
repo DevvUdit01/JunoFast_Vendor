@@ -14,13 +14,11 @@ class SplashScreenView extends GetView<SplashScreenController> {
         body: Center(
           child: SizedBox(
             height: 200,
-            child: controller.isImageLoaded
-                ? Image.asset(
+            child: Image.asset(
                     'assets/jf_splashlogo.png',
                     height: double.infinity,
                     width: double.infinity - 20,
                   )
-                : const Icon(Icons.verified_user_outlined,size: 50,),  // Show a loader while the image is loading
           ),
         ),
       ),

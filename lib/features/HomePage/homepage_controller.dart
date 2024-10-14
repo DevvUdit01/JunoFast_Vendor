@@ -278,10 +278,10 @@ void fetchAndListenForLeads() {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    Get.snackbar('Location Updated', 'Vendor location updated successfully.', snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar('Location Updated', ' Automatic Vendor location updated successfully.', snackPosition: SnackPosition.TOP);
   } catch (e) {
     print('Error fetching location: $e');
-    Get.snackbar('Error', 'Failed to update location.', snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar('Error', 'Failed to update location.', snackPosition: SnackPosition.TOP);
   }
 }
 

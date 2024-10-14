@@ -32,10 +32,11 @@ class LoginPageView extends GetView<LoginPageController> {
                   children: [
                     SizedBox(height: screenSize.height * 0.05),
                     SizedBox(
+                      height: screenSize.height * 0.2,
                       width: screenSize.width * 0.7,
-                      child: Image.asset('assets/ic_launcher.png',),
+                      child: Image.asset('assets/ic_launcher.png',fit: BoxFit.fitHeight,),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 40),
                     // Custom Email Field
                     customTextField(
                       "Email",

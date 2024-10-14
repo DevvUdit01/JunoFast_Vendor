@@ -4,42 +4,37 @@ import '../../core/globals.dart'as gbl;
 import '../../firebasServices/auth_services.dart';
 
 class PaymentPageController extends GetxController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  var payments = <Map<String, dynamic>>[].obs; // Observable list of payments
-  var isLoading = false.obs;
+  
+   var isLoading = false.obs;
+   var payments = <Map<String, dynamic>>[].obs;
    String vendorId = gbl.currentUserUID.value;
 
    @override
   void onInit() {
     super.onInit();
     AuthService.getCurrentUserUID();
+    fetchVendorPayments(vendorId);
   }
 
+  // Listen to real-time changes in the 'payments' collection
+  void fetchVendorPayments(String vendorId){
+    FirebaseFirestore.instance
+        .collection('payments').where('vendorId', isEqualTo: vendorId)
+        .snapshots() // Listen for real-time updates
+        .listen((snapshot) {
+      isLoading(true); // Show loading indicator
 
-  // Fetch payment details for the current vendor
-  Future<void> fetchVendorPayments(String vendorId) async {
-    try {
-      isLoading.value = true;
+      payments.value = snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data();
+        data['id'] = doc.id; // Store document ID
+        return data;
+      }).toList();
 
-      // Query the payments collection for the current vendor's payments
-      QuerySnapshot snapshot = await _firestore
-          .collection('payments')
-          .where('vendorId', isEqualTo: vendorId)
-          .get();
-
-      // Clear the list before adding new data
-      payments.clear();
-
-      // Map the documents to a list of payment details
-      snapshot.docs.forEach((doc) {
-        payments.add(doc.data() as Map<String, dynamic>);
-      });
-
-    } catch (e) {
-      print('Error fetching vendor payments: $e');
-    } finally {
-      isLoading.value = false;
-    }
+      isLoading(false); // Hide loading indicator
+    }, onError: (e) {
+      isLoading(false);
+      Get.snackbar('Error', 'Failed to fetch payments: $e');
+    });
   }
+
 }

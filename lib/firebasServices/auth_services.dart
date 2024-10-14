@@ -93,7 +93,7 @@ class AuthService {
         'Error',
         _handleAuthError(e),
         backgroundColor: const Color(0xFFFD1212),
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
     } catch (e) {
       Get.back();
