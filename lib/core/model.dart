@@ -4,7 +4,7 @@ class Lead {
   final String id;
   final String pickupLocation;
   final String dropLocation;
-  final String vehicleType;
+  final String leadPermission;
   final String status;
   final double amount;
   final String clientName;
@@ -18,7 +18,7 @@ class Lead {
     required this.id,
     required this.pickupLocation,
     required this.dropLocation,
-    required this.vehicleType,
+    required this.leadPermission,
     required this.status,
     required this.amount,
     required this.clientName,
@@ -35,7 +35,7 @@ class Lead {
       id: doc.id,
       pickupLocation: data['pickupLocation'] ,
       dropLocation: data['dropLocation'],
-      vehicleType: data['vehicleType'] ,
+      leadPermission: data['leadPermission'] ,
       status: data['status'] ,
       amount: data['amount'] ,
       clientName: data['clientName'],
@@ -51,7 +51,7 @@ class Lead {
     return {
       'pickupLocation': pickupLocation,
       'dropLocation': dropLocation,
-      'vehicleType': vehicleType,
+      'leadPermission': leadPermission,
       'status': status,
       'amount': amount,
       'clientName': clientName,
@@ -69,7 +69,7 @@ class Booking {
   final String id;
   final String pickupLocation;
   final String dropLocation;
-  final String vehicleType;
+  final String leadPermission;
   final String status;
   final double amount;
   final String clientName;
@@ -87,7 +87,7 @@ class Booking {
     required this.id,
     required this.pickupLocation,
     required this.dropLocation,
-    required this.vehicleType,
+    required this.leadPermission,
     required this.status,
     required this.amount,
     required this.clientName,
@@ -110,7 +110,7 @@ class Booking {
       id: doc.id,
       pickupLocation: data['pickupLocation'],
       dropLocation: data['dropLocation'] ,
-      vehicleType: data['vehicleType'] ,
+      leadPermission: data['leadPermission'] ,
       status: data['status'] ,
       amount: data['amount'] ,
       clientName: data['clientName'],
@@ -130,7 +130,7 @@ class Booking {
     return {
       'pickupLocation': pickupLocation,
       'dropLocation': dropLocation,
-      'vehicleType': vehicleType,
+      'leadPermission': leadPermission,
       'status': status,
       'amount': amount,
       'clientName': clientName,

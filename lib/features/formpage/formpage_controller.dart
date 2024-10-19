@@ -4,7 +4,7 @@ import '../../core/VendorModel/Vendor_model.dart';
 import '../../firebasServices/auth_services.dart';
 
 class FormPageController extends GetxController {
-  
+
   final formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -15,11 +15,11 @@ class FormPageController extends GetxController {
   TextEditingController firmController = TextEditingController();
   
   var packing = ''.obs;
-  var role = ''.obs;
+  String? role;
   var termCondition = false.obs;
   var registerFirm = false.obs;
   var isGoogleLoging = false.obs;
-  String? typeOfVehicleRequired;
+  late List<String> leadPermission = [];   // Updated to List<String>
 
   @override
   void onInit() {
@@ -37,7 +37,7 @@ class FormPageController extends GetxController {
       if (formKey.currentState!.validate()) {
         if (packing.isEmpty) {
           Get.snackbar('Required', 'Check packing', backgroundColor: Colors.red);
-        } else if (role.isEmpty) {
+        } else if (role == null || role!.isEmpty) {
           Get.snackbar('Required', 'Check role', backgroundColor: Colors.red);
         } else if (!termCondition.value) {
           Get.snackbar('Required', 'Accept terms and conditions', backgroundColor: Colors.red);
@@ -46,6 +46,32 @@ class FormPageController extends GetxController {
         } else if (passwordController.text != cpasswordController.text) {
           Get.snackbar('Error', 'Passwords do not match', backgroundColor: Colors.red);
         } else {
+           leadPermission.clear(); // Clear any previously added permissions
+
+       if (role == 'Transport Agent') {
+         leadPermission.add('Industrial Transportation');
+       } 
+       if (role == 'Packers & Movers') {
+         leadPermission.addAll([
+           'House Shifting',
+           'PG Shifting',
+           'Office Relocation',
+           'Bike Carrier',
+           'Parcel/Courier'
+         ]);
+       } 
+       if (role == 'Field Officer') {
+         leadPermission.add('Industrial Transportation');
+       } 
+       if (role == 'Car Carrier') {
+         leadPermission.addAll([
+           'Car Transportation',
+           'Bike Transportation'
+         ]);
+       } 
+       if (role == 'Bike Carrier') {
+         leadPermission.add('Bike Transportation');
+       }
           signUp();
         }
       } else {
@@ -65,30 +91,32 @@ class FormPageController extends GetxController {
       password: passwordController.text.trim(),
       conformPassword: cpasswordController.text.trim(),
       address: addressController.text.trim(),
-      vehicleType: typeOfVehicleRequired!,
-      role: role.value,
+      leadPermission: leadPermission, // Updated to List<String>
+      role: role!,
       packing: packing.value,
       registerFirm: registerFirm.value,
       bookings: [], // Empty booking list initially
-      location: {},
-      fcmToken:'',
+      location: {}, // Assuming no location data initially
+      fcmToken: '', // Assuming no FCM token initially
     );
 
     // Return the vendor model to the previous page
     Get.back(result: vendor);
   }
 
+  // Method to select packing
   String selectPacking(String selectedPacking) {
     packing.value = selectedPacking;
     return packing.value;
   }
 
+  // Method to select role
   String selectRole(String selectedUser) {
-    role.value = selectedUser;
-    return role.value;
+    role = selectedUser;
+    return role!;
   }
 
-  void loginWithGoogle() async {
-    await AuthService.signUpWithGoogle();
-  }
+
+
+
 }

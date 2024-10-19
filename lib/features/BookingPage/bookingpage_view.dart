@@ -175,7 +175,7 @@ class BookingPageView extends StatelessWidget {
                 style: TextStyle(color: secondaryColor)),
                 Text('Client Name: ${booking.clientName}'),
                 Text('Client Number: ${booking.clientNumber}'),
-                Text('Vehicle Type: ${booking.vehicleType}'),
+                Text('Type of lead accepting: ${booking.leadPermission}'),
                 Text('Pickup Location: ${booking.pickupLocation}'),
                 Text('Drop Location: ${booking.dropLocation}'),
                 Text('Pickup Date: ${booking.pickupDate}'),

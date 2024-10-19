@@ -4,7 +4,6 @@ import '../../core/VendorModel/Vendor_model.dart';
 import '../../firebasServices/auth_services.dart';
 
 class SignUpPageController extends GetxController {
-//   RxBool isSet = true.obs;
   final signupKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
@@ -14,14 +13,15 @@ class SignUpPageController extends GetxController {
   TextEditingController addressController = TextEditingController();
   TextEditingController firmController = TextEditingController();
   var packing = ''.obs;
-  var role = ''.obs;
+  String? role;
+ late List<String> leadPermission = [];
   var termCondition = false.obs;
   var registerFirm = false.obs;
-  String? typeOfVehicleRequired;
 
   @override
   void onInit() {
     super.onInit();
+    // Initialize leadPermission if needed
   }
 
   void checkValidation() {
@@ -30,86 +30,87 @@ class SignUpPageController extends GetxController {
       if (signupKey.currentState!.validate()) {
         // Proceed if the form is valid
         if (packing.isEmpty) {
-          Get.snackbar('Required','check packing',backgroundColor: Colors.red);
-          print('check packing');
-        } else if (role.isEmpty) {
-          Get.snackbar('Required','check role',backgroundColor: Colors.red);
-          print('check role');
+          Get.snackbar('Required', 'Check packing', backgroundColor: Colors.red);
+        } else if (role == null || role!.isEmpty) {
+          Get.snackbar('Required', 'Check role', backgroundColor: Colors.red);
         } else if (termCondition == false) {
-          Get.snackbar('Required','check term and condition',backgroundColor: Colors.red);
-          print('check term and condition');
+          Get.snackbar('Required', 'Check term and condition', backgroundColor: Colors.red);
         } else if (registerFirm == false) {
-          Get.snackbar('Required','check register firm',backgroundColor: Colors.red);
-          print('check register firm');
-        }else if(passwordController.text != cpasswordController.text){
-            Get.snackbar('Error','Please Match password and conform password',backgroundColor: Colors.red);
-        }
-         else {
-          signUp();
+          Get.snackbar('Required', 'Check register firm', backgroundColor: Colors.red);
+        } else if (passwordController.text != cpasswordController.text) {
+          Get.snackbar('Error', 'Please match password and confirm password', backgroundColor: Colors.red);
+        } else {
+          leadPermission.clear(); // Clear any previously added permissions
 
-          print('valid form');
+       if (role== 'Transport Agent') {
+         leadPermission.add('Industrial Transportation');
+       } 
+       if (role == 'Packers & Movers') {
+         leadPermission.addAll([
+           'House Shifting',
+           'PG Shifting',
+           'Office Relocation',
+           'Bike Carrier',
+           'Parcel/Courier'
+         ]);
+       } 
+       if (role == 'Field Officer') {
+         leadPermission.add('Industrial Transportation');
+       } 
+       if (role == 'Car Carrier') {
+         leadPermission.addAll([
+           'Car Transportation',
+           'Bike Transportation'
+         ]);
+       } 
+       if (role == 'Bike Carrier') {
+         leadPermission.add('Bike Transportation');
+       }
+
+          signUp();
+          print('Valid form');
         }
-        // signUp();
-        // Get.toNamed('/nextPage');  // Replace wit h your route
       } else {
-        // Show error if the form is invalid
         print('Invalid form');
       }
     } else {
-      // Handle the case where formKey.currentState is null
-      print('form key null');
-      return;
+      print('Form key is null');
     }
   }
+
   void signUp() async {
-  VendorModel vendor = VendorModel(
-    name: nameController.text.trim(),
-    email: emailController.text.trim(),
-    mobileNumber: mobileController.text.trim(),
-    firm: firmController.text.trim(),
-    password: passwordController.text.trim(),
-    conformPassword: cpasswordController.text.trim(),
-    address: addressController.text.trim(),
-    vehicleType: typeOfVehicleRequired!,
-    role: role.value,
-    packing: packing.value,
-    registerFirm: registerFirm.value,
-    bookings: [], // Empty booking list initially
-    location: {},
-    fcmToken:'',
-  );
+    VendorModel vendor = VendorModel(
+      name: nameController.text.trim(),
+      email: emailController.text.trim(),
+      mobileNumber: mobileController.text.trim(),
+      firm: firmController.text.trim(),
+      password: passwordController.text.trim(),
+      conformPassword: cpasswordController.text.trim(),
+      address: addressController.text.trim(),
+      leadPermission: leadPermission, // Assigning leadPermission directly
+      role: role!,
+      packing: packing.value,
+      registerFirm: registerFirm.value,
+      bookings: [], // Empty booking list initially
+      location: {},
+      fcmToken: '',
+    );
 
-   await AuthService.signUpWithEmailAndPassword(vendor);
-    
+    await AuthService.signUpWithEmailAndPassword(vendor);
   }
 
-  String selectPacking(String selectedPaking) {
-    if (selectedPaking == 'Yes') {
-      packing.value = selectedPaking;
-      return packing.value;
-    } else if (selectedPaking == 'No') {
-      packing.value = selectedPaking;
-      return packing.value;
-    } else {
-      return packing.value;
-    }
+  String selectPacking(String selectedPacking) {
+    packing.value = selectedPacking;
+    return packing.value;
   }
 
   String selectRole(String selectedUser) {
-    if (selectedUser == 'Fleet Owner') {
-      role.value = selectedUser;
-      return role.value;
-    } else if (selectedUser == 'Packers & Movers') {
-      role.value = selectedUser;
-      return role.value;
-    } else {
-      return role.value;
-    }
+    role = selectedUser;
+    return role!;
   }
 
-  void loginWithGoogle() async{
-    print('signUp wiht google call');
+  void loginWithGoogle() async {
+    print('SignUp with Google called');
     await AuthService.signUpWithGoogle();
   }
-
 }

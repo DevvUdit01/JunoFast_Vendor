@@ -8,12 +8,12 @@ class VendorModel {
   late String password;
   late String conformPassword;
   late String address;
-  late String vehicleType;
+  late List<String> leadPermission; // Corrected to List<String>
   late String role;
   late String packing;
   late bool registerFirm;
   late List bookings;
-  Map<String,dynamic> location;
+  Map<String, dynamic> location;
   late String fcmToken;
 
   VendorModel({
@@ -24,7 +24,7 @@ class VendorModel {
     required this.password,
     required this.conformPassword,
     required this.address,
-    required this.vehicleType,
+    required this.leadPermission, // Expecting List<String> for permissions
     required this.role,
     required this.packing,
     required this.registerFirm,
@@ -33,6 +33,7 @@ class VendorModel {
     required this.fcmToken,
   });
 
+  // Factory method to create VendorModel from Firestore DocumentSnapshot
   factory VendorModel.fromDocumentSnapshot(DocumentSnapshot doc) {
     return VendorModel(
       name: doc['name'],
@@ -42,16 +43,17 @@ class VendorModel {
       password: doc['password'],
       conformPassword: doc['conformPassword'],
       address: doc['address'],
-      vehicleType: doc['vehicleType'],
+      leadPermission: List<String>.from(doc['leadPermission']), // Ensure List<String>
       role: doc['role'],
       packing: doc['packing'],
       registerFirm: doc['registerFirm'],
       bookings: List.from(doc['bookings']),
-      location: doc['location'],
+      location: Map<String, dynamic>.from(doc['location']),
       fcmToken: doc['fcmToken'],
     );
   }
 
+  // Convert VendorModel to a map for Firestore
   Map<String, dynamic> toMap() {
     return {
       'name': name,
@@ -61,7 +63,7 @@ class VendorModel {
       'password': password,
       'conformPassword': conformPassword,
       'address': address,
-      'vehicleType': vehicleType,
+      'leadPermission': leadPermission, // Ensure it saves as List<String>
       'role': role,
       'packing': packing,
       'registerFirm': registerFirm,

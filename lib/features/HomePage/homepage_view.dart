@@ -129,51 +129,48 @@ class HomePageView extends GetView<HomePageController> {
                             ],
                           ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           
-                          Row(
-                            children: [
-                              const Text(
-                                'Status: ',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 18),
-                              ),
-                              Text(
-                                lead.status,
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                            ],
+                          const Text(
+                            'Status: ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 18),
                           ),
-                          Row(
-                            children: [
-                              const Text(
-                                'Vehicle Type: ',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 18),
-                              ),
-                              Text(
-                                lead.vehicleType,
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                            ],
+                          Text(
+                            lead.status,
+                            style: const TextStyle(fontSize: 18),
                           ),
-                        ],
+                           ],
                       ),
+                          Row(
+                            children: [
+                              const Text(
+                                'Type of lead: ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 18),
+                              ),
+                              Text(
+                            lead.leadPermission,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                       
+                            ],
+                          ),
                       const SizedBox(height: 5),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               const Text(
-                                'DateTime: ',
+                                'lead creation time: ',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600, fontSize: 18),
                               ),
                               Text(
                                 formatTimestamp(lead.timestamp),
-                                style: const TextStyle(fontSize: 18),
+                                style: const TextStyle(fontSize: 16),
                               ),
                             ],
                           ),

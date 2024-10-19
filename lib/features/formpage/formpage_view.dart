@@ -57,42 +57,31 @@ class FormPageView extends GetView<FormPageController> {
                         ),
                       ),
                     ),
-                    Padding(
+                     Padding(
                       padding:
                           const EdgeInsets.symmetric(horizontal: 19, vertical: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Obx(
-                            () => Row(
-                              children: [
-                                Radio(
-                                  value: 'Fleet Owner',
-                                  groupValue: controller.role.value,
-                                  onChanged: (value) {
-                                    controller.selectRole(value!);
-                                  },
-                                ),
-                                const Text('Fleet Owner'),
-                              ],
-                            ),
-                          ),
-                          Obx(
-                            () => Row(
-                              children: [
-                                Radio(
-                                  value: 'Packers & Movers',
-                                  groupValue: controller.role.value,
-                                  onChanged: (value) {
-                                    controller.selectRole(value!);
-                                  },
-                                ),
-                                const Text('Packers & Movers'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      child:   DropdownButtonFormField<String>(
+                  value: controller.role,
+                  items: const [
+                    DropdownMenuItem(value: "Transport Agent", child: Text("Transport Agent")),
+                    DropdownMenuItem(value: "Packers & Movers", child: Text("Packers & Movers")),
+                    DropdownMenuItem(value: "Field Officer", child: Text("Field Officer")),
+                    DropdownMenuItem(value: "Car Carrier", child: Text("Car Carrier")),
+                    DropdownMenuItem(value: "Bike Carrier", child: Text("Bike Carrier")),
+                  ],
+                  onChanged: (value) {
+                    controller.role = value!;
+                  },
+                  decoration: InputDecoration(
+                    labelText: "Type of Vendor ",
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Colors.orange),
+                    ),
+                  ),
+                ),
                     ),
                     customTextField("User Name", 'Enter Name', TextInputType.name,Icons.person, controller.nameController),
                     controller.isGoogleLoging.value ? customTextFieldNoFilled(
@@ -141,44 +130,44 @@ class FormPageView extends GetView<FormPageController> {
                       ),
                     ),
       
-                    Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
-                      child: DropdownButtonFormField<String>(
-                        value: controller.typeOfVehicleRequired,
-                        items: const [
-                          DropdownMenuItem(value: "Truck", child: Text("Truck")),
-                          DropdownMenuItem(value: "Van", child: Text("Van")),
-                          DropdownMenuItem(value: "Car", child: Text("Car")),
-                        ],
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide
-                                .none, // Default border (when not focused)
-                          ),
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.8),
-                          label: const Text('Vehicles your own option'),
-                          hintStyle: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                          // Set the border when focused (e.g., rounded with a solid border)
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                              color: Colors
-                                  .transparent, // Change the color to your desired focus color
-                              width: 2.0, // Change the thickness of the border
-                            ),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          controller.typeOfVehicleRequired = value;
-                        },
-                      ),
-                    ),
+                    // Padding(
+                    //   padding:
+                    //       const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                    //   child: DropdownButtonFormField<String>(
+                    //     value: controller.typeOfVehicleRequired,
+                    //     items: const [
+                    //       DropdownMenuItem(value: "Truck", child: Text("Truck")),
+                    //       DropdownMenuItem(value: "Van", child: Text("Van")),
+                    //       DropdownMenuItem(value: "Car", child: Text("Car")),
+                    //     ],
+                    //     decoration: InputDecoration(
+                    //       border: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(15),
+                    //         borderSide: BorderSide
+                    //             .none, // Default border (when not focused)
+                    //       ),
+                    //       filled: true,
+                    //       fillColor: Colors.white.withOpacity(0.8),
+                    //       label: const Text('Vehicles your own option'),
+                    //       hintStyle: const TextStyle(
+                    //         fontSize: 12,
+                    //         color: Colors.grey,
+                    //       ),
+                    //       // Set the border when focused (e.g., rounded with a solid border)
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(15),
+                    //         borderSide: const BorderSide(
+                    //           color: Colors
+                    //               .transparent, // Change the color to your desired focus color
+                    //           width: 2.0, // Change the thickness of the border
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     onChanged: (value) {
+                    //       controller.typeOfVehicleRequired = value;
+                    //     },
+                    //   ),
+                    // ),
       
                     customTextField(
                         "Address",
