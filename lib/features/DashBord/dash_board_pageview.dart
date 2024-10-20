@@ -18,7 +18,7 @@ class DashBoardView extends GetView<DashBoardController> {
       items: controller.nabBarItem(),
       navBarStyle: NavBarStyle.style7,
       confineToSafeArea: true,
-          backgroundColor: Colors.black, // Default is Colors.white.
+          backgroundColor: Colors.transparent, // Default is Colors.white.
           handleAndroidBackButtonPress: true, // Default is true.
           resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
           stateManagement: true, // Default is true.
@@ -34,7 +34,7 @@ class DashBoardView extends GetView<DashBoardController> {
           //   duration: Duration(milliseconds: 200),
           // ),
           decoration: const NavBarDecoration(
-            colorBehindNavBar: Colors.red,
+            colorBehindNavBar: Color(0xFFEFECEC),
           ),
       ),
     ),

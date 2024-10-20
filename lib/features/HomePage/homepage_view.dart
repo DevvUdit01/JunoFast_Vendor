@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:junofast_vendor/features/PaymentPage/paymentpage_view.dart';
+import 'package:junofast_vendor/features/ProfilePage/profilepage_controller.dart';
+import 'package:junofast_vendor/routing/routes_constant.dart';
 import 'homepage_controller.dart';
 
 class HomePageView extends GetView<HomePageController> {
@@ -15,46 +18,55 @@ class HomePageView extends GetView<HomePageController> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
+    ProfilePageController pageController = Get.put(ProfilePageController());
     return Scaffold(
-      backgroundColor: Color(0xFFF69F1C),
+      backgroundColor: Colors.white,
       drawer: Drawer(
         width: MediaQuery.of(context).size.width * 0.5,
         child: ListView(
           children: [
-            const UserAccountsDrawerHeader(
-              accountName: Text("Admin Name"),
-              accountEmail: Text("AdminName@gmail.com"),
+             const UserAccountsDrawerHeader(
+              accountName: Text("user Name"),
+              accountEmail: Text("UserEmail.com"),
               currentAccountPicture: CircleAvatar(
                 backgroundImage: NetworkImage(
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToQMu10bV9Vr8oWuZ1SfwfKG0LH4GQRj-RjK3pujOwSCULxevP8kXFHstKOg&s"),
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToQMu10bV9Vr8oWuZ1SfwfKG0LH4GQRj-RjK3pujOwSCULxevP8kXFHstKOg&s"),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text("Profile"),
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(RoutesConstant.profilepage);
+              },
             ),
             ListTile(
               leading: const Icon(Icons.currency_rupee_sharp),
               title: const Text("Payment"),
-              onTap: () {},
+              onTap: () {
+                Get.to(const PaymentPageView());
+              },
             ),
             ListTile(
               leading: const Icon(Icons.edit_document),
               title: const Text("Notes"),
-              onTap: () {},
+              onTap: () {
+              },
             ),
             ListTile(
               leading: const Icon(Icons.help),
               title: const Text("Help"),
-              onTap: () {},
+              onTap: () {
+               Get.toNamed(RoutesConstant.helpSupport);
+              },
             ),
           ],
         ),
       ),
       appBar: AppBar(
         title: const Text('Leads'),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.orange,
       ),
       body: Obx(() {
         if (controller.leads.isEmpty) {

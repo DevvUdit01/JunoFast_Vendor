@@ -24,37 +24,37 @@ class DashBoardController extends GetxController{
    List<PersistentBottomNavBarItem> nabBarItem(){
     return [
        PersistentBottomNavBarItem(
-      icon:const Icon(Icons.home,size: 30,color: Colors.white,),
+      icon:const Icon(Icons.home,size: 30),
       title: ("Home"),
       activeColorSecondary: Colors.white,
        inactiveColorSecondary: const Color(0xFFA7A6A6),
       activeColorPrimary: Colors.blue,
-      inactiveColorPrimary: const Color(0xFFA7A6A6),
+      inactiveColorPrimary: const Color(0xFF626161),
     ),
    
       PersistentBottomNavBarItem(
-      icon:const Icon(Icons.book_online_sharp,size: 30,color: Colors.white,),
+      icon:const Icon(Icons.book_online_sharp,size: 30),
       title: ("Booking"),
     activeColorPrimary: Colors.blue,
-      inactiveColorPrimary: const Color(0xFFA7A6A6),
+      inactiveColorPrimary: const Color(0xFF626161),
        activeColorSecondary: Colors.white,
        inactiveColorSecondary: const Color(0xFFA7A6A6),
     ),
 
       PersistentBottomNavBarItem(
-      icon:const Icon(Icons.currency_rupee_sharp,size: 30,color: Colors.white,),
+      icon:const Icon(Icons.currency_rupee_sharp,size: 30),
       title: ("Payment"),
       activeColorPrimary: Colors.blue,
-      inactiveColorPrimary: const Color(0xFFA7A6A6),
+      inactiveColorPrimary: const Color(0xFF626161),
        activeColorSecondary: Colors.white,
        inactiveColorSecondary: const Color(0xFFA7A6A6),
     ),
 
       PersistentBottomNavBarItem(
-      icon:const Icon(Icons.settings,size: 30,color: Colors.white,),
+      icon:const Icon(Icons.settings,size: 30),
       title: ("Setting"),
       activeColorPrimary: Colors.blue,
-     inactiveColorPrimary: const Color(0xFFA7A6A6),
+     inactiveColorPrimary: const Color(0xFF626161),
       activeColorSecondary: Colors.white,
        inactiveColorSecondary: const Color(0xFFA7A6A6),
     ),

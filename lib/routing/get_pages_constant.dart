@@ -1,8 +1,18 @@
 import 'package:get/get.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_binding.dart';
 import 'package:junofast_vendor/features/BookingPage/bookingpage_view.dart';
+import 'package:junofast_vendor/features/Help&SupportPage/help_support_binding.dart';
+import 'package:junofast_vendor/features/Help&SupportPage/help_support_view.dart';
 import 'package:junofast_vendor/features/Forget%20Password/forgotpasswordpage_binding.dart';
 import 'package:junofast_vendor/features/Forget%20Password/forgotpasswordpage_view.dart';
+import 'package:junofast_vendor/features/NotificationPage/notificationPage_view.dart';
+import 'package:junofast_vendor/features/NotificationPage/notificationpage_binding.dart';
+import 'package:junofast_vendor/features/ProfilePage/profilepage_binding.dart';
+import 'package:junofast_vendor/features/ProfilePage/profilepage_view.dart';
+import 'package:junofast_vendor/features/ReportBugPage/reportBug_binding.dart';
+import 'package:junofast_vendor/features/ReportBugPage/reportBug_view.dart';
+import 'package:junofast_vendor/features/ChangePassword.dart/changepassword_binding.dart';
+import 'package:junofast_vendor/features/ChangePassword.dart/changepassword_view.dart';
 import 'package:junofast_vendor/features/signuppage/signuppage_binding.dart';
 import 'package:junofast_vendor/features/signuppage/signuppage_view.dart';
 import '../features/DashBord/dash_board_binding.dart';
@@ -91,6 +101,38 @@ List<GetPage> getPage = [
     name: RoutesConstant.signuppage,
      page: ()=>  const SignUpPageView(),
      binding: SignUpPageBinding(),
+     transition: Transition.rightToLeft,
+     ),
+     
+   
+    GetPage( 
+    name: RoutesConstant.changePassword,
+     page: ()=>   ChangePasswordView(),
+     binding: ChangePasswordBinding(),
+     transition: Transition.rightToLeft,
+     ),
+     GetPage( 
+    name: RoutesConstant.helpSupport,
+     page: ()=>  const HelpSupportView(),
+     binding: HelpSupportBinding(),
+     transition: Transition.rightToLeft,
+     ),
+    GetPage( 
+    name: RoutesConstant.notificationPage,
+     page: ()=>  const NotificationPageView(),
+     binding: NotificationPageBinding(),
+     transition: Transition.rightToLeft,
+     ),
+      GetPage( 
+    name: RoutesConstant.reportBugPage,
+     page: ()=>  const ReportBugView(),
+     binding: ReportBugBinding(),
+     transition: Transition.rightToLeft,
+     ),
+    GetPage( 
+    name: RoutesConstant.profilepage,
+     page: ()=> const ProfilePageView(),
+     binding: ProfilePageBinding(),
      transition: Transition.rightToLeft,
      ),
 ];

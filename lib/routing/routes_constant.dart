@@ -10,4 +10,10 @@ class RoutesConstant{
   static String bookingpage = '/bookingpage_view';
   static String verifyEmailOTP = '/verifyEmailOTP';
   static String forgotPassword = '/forget_password';
+
+  static String helpSupport= '/help_support_view';
+  static String changePassword= '/changepassword_view';
+  static String reportBugPage = '/reportBug_view';
+  static String notificationPage = '/notificationPage_view';
+  static String profilepage = '/profilepage_view';
 }

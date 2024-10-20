@@ -252,7 +252,7 @@ void fetchAndListenForLeads() {
       await _updateVendorLocation(currentUserId);
     } else if (await Permission.location.isPermanentlyDenied) {
       // Notify user to enable permission in settings
-      Get.snackbar('Location Permission', 'Please enable location permission in settings.', snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Location Permission', 'Please enable location permission in settings.', snackPosition: SnackPosition.TOP);
     } else {
       print('Location permission is required to update vendor location.');
     }

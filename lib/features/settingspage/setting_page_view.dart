@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:junofast_vendor/routing/routes_constant.dart';
 import 'setting_page_controller.dart';
 
 class SettingPageView extends GetView<SettingPageController> {
   const SettingPageView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
@@ -14,7 +15,7 @@ class SettingPageView extends GetView<SettingPageController> {
           "Settings",
           style: TextStyle(color: Colors.white),
         ),
-        iconTheme: IconThemeData(color: Colors.orange),
+        iconTheme: const IconThemeData(color: Colors.orange),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -23,21 +24,26 @@ class SettingPageView extends GetView<SettingPageController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               sectionHeader("GENERAL"),
-              cartButton("Account", Icons.account_circle, Icons.arrow_forward_ios, () {
-                // Get.toNamed(RouteConstant.profile);
+              cartButton("Change Password", Icons.lock, Icons.arrow_forward_ios, () {
+                Get.toNamed(RoutesConstant.changePassword);
+              }),            
+              cartButton("Notification", Icons.notifications_none, Icons.arrow_forward_ios, () {
+                Get.toNamed(RoutesConstant.notificationPage);
               }),
-              cartButton("Passenger Master List", Icons.list, Icons.arrow_forward_ios, () {
-                // controller.showPassengerMasterList();
+              cartButton("Coupons", Icons.card_giftcard, Icons.arrow_forward_ios, () {
+
               }),
-              cartButton("Notification", Icons.notifications_none, Icons.arrow_forward_ios, () {}),
-              cartButton("Coupons", Icons.card_giftcard, Icons.arrow_forward_ios, () {}),
               cartButton("Logout", Icons.logout, Icons.arrow_forward_ios, () {
                 controller.logOut();
               }),
-              cartButton("Delete Account", Icons.delete, Icons.arrow_forward_ios, () {}),
+              
               sectionHeader("FEEDBACK"),
-              cartButton("Report a bug", Icons.report_problem_outlined, Icons.arrow_forward_ios, () {}),
-              cartButton("Send feedback", Icons.feedback_outlined, Icons.arrow_forward_ios, () {}),
+              cartButton("Report a bug", Icons.report_problem_outlined, Icons.arrow_forward_ios, () {
+              Get.toNamed(RoutesConstant.reportBugPage);
+              }),
+              cartButton("Help & Support", Icons.help, Icons.arrow_forward_ios, () {
+               Get.toNamed(RoutesConstant.helpSupport);
+              }),
             ],
           ),
         ),
@@ -73,7 +79,7 @@ class SettingPageView extends GetView<SettingPageController> {
               color: Colors.orange.withOpacity(0.2), // Soft orange shadow
               blurRadius: 5,
               spreadRadius: 1,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -88,7 +94,7 @@ class SettingPageView extends GetView<SettingPageController> {
           ),
           title: Text(
             fieldName,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black, // Text color
               fontWeight: FontWeight.w500,
             ),

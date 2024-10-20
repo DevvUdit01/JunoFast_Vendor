@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/VendorModel/Vendor_model.dart';
-import '../../firebasServices/auth_services.dart';
 
 class FormPageController extends GetxController {
 
